@@ -87,6 +87,7 @@ Adafruit_MQTT_Subscribe sunRise = Adafruit_MQTT_Subscribe(&mqtt, "sunrise");
 Adafruit_MQTT_Subscribe sunSet = Adafruit_MQTT_Subscribe(&mqtt, "sunset");
 Adafruit_MQTT_Subscribe moonRise = Adafruit_MQTT_Subscribe(&mqtt, "moonrise");
 Adafruit_MQTT_Subscribe moonSet = Adafruit_MQTT_Subscribe(&mqtt, "moonset");
+Adafruit_MQTT_Subscribe moonPhase = Adafruit_MQTT_Subscribe(&mqtt, "moonphase");
 
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, "fritz.box", 3600, 60000);
@@ -342,6 +343,7 @@ void setup(void) {
   sunSet.setCallback(sunsetcallback);
   moonRise.setCallback(moonrisecallback);
   moonSet.setCallback(moonsetcallback);
+  moonPhase.setCallback(moonphasecallback);
 
 
   // Setup MQTT subscriptions
@@ -353,6 +355,7 @@ void setup(void) {
   mqtt.subscribe(&sunSet);
   mqtt.subscribe(&moonRise);
   mqtt.subscribe(&moonSet);
+  mqtt.subscribe(&moonPhase);
 
   display.init(115200);
 
@@ -395,7 +398,7 @@ void displayData()
   String moonLight = "env.location.moonlight";
   String moonRise = gMoonRise;
   String moonSet = gMoonSet;
-  String moonPhase = "7";
+  String moonPhase = gMoonPhase;
   String sunSet =gSunSet;
   String sunRise = gSunRise;
   String temperature = gTemp2;
@@ -551,7 +554,7 @@ void display_icon(int x, int y, String icon_name) {
   else if (icon_name == "moon_5")
     display.drawBitmap(x, y, moon_6, 24, 24, GxEPD_BLACK);
   else if (icon_name == "moon_6")
-    display.drawBitmap(x, y, moon_7, 24, 24, GxEPD_BLACK);
+    display.drawBitmap(x, y, moon_6, 24, 24, GxEPD_BLACK);
   else if (icon_name == "moon_7")
     display.drawBitmap(x, y, moon_8, 24, 24, GxEPD_BLACK);
   else if (icon_name == "moon_8")
@@ -666,4 +669,9 @@ void moonsetcallback(char* x, uint16_t dummy) {
     Serial.print("moonsetcallback change: ");
     Serial.println(x);
     gMoonSet = x;
+}
+void moonphasecallback(char* x, uint16_t dummy) {
+    Serial.print("moonphase update: ");
+    Serial.println(x);
+    gMoonPhase = x;
 }
