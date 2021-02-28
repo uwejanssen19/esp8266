@@ -1,10 +1,13 @@
 # esp8266
 
 Display unit for displaying local and internet based weather data
+
 Hardware:
 - Waveshare e-paper display 7.5 inch 800x480 b/w
 - Waveshare driver board for e-paper display including ESP8266 processor
+
 Software:
+
 Setup for 
 - WiFi
 - e-paper display
