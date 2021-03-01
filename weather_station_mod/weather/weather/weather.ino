@@ -89,7 +89,7 @@ Adafruit_MQTT_Subscribe sunSet = Adafruit_MQTT_Subscribe(&mqtt, "sunset");
 Adafruit_MQTT_Subscribe moonRise = Adafruit_MQTT_Subscribe(&mqtt, "moonrise");
 Adafruit_MQTT_Subscribe moonSet = Adafruit_MQTT_Subscribe(&mqtt, "moonset");
 Adafruit_MQTT_Subscribe moonPhase = Adafruit_MQTT_Subscribe(&mqtt, "moonphase");
-Adafruit_MQTT_Subscribe azimut = Adafruit_MQTT_Subscribe(&mqtt, "azimut");
+Adafruit_MQTT_Subscribe azimuth = Adafruit_MQTT_Subscribe(&mqtt, "azimut");
 Adafruit_MQTT_Subscribe elevation = Adafruit_MQTT_Subscribe(&mqtt, "elevation");
 
 WiFiUDP ntpUDP;
@@ -347,8 +347,8 @@ void setup(void) {
   moonRise.setCallback(moonrisecallback);
   moonSet.setCallback(moonsetcallback);
   moonPhase.setCallback(moonphasecallback);
-  moonPhase.setCallback(azimutcallback);
-  moonPhase.setCallback(elevationcallback);
+  azimuth.setCallback(azimutcallback);
+  elevation.setCallback(elevationcallback);
 
 
   // Setup MQTT subscriptions
@@ -361,7 +361,7 @@ void setup(void) {
   mqtt.subscribe(&moonRise);
   mqtt.subscribe(&moonSet);
   mqtt.subscribe(&moonPhase);
-  mqtt.subscribe(&azimut);
+  mqtt.subscribe(&azimuth);
   mqtt.subscribe(&elevation);
 
   display.init(115200);
