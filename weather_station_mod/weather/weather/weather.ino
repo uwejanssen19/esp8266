@@ -40,8 +40,8 @@
 
 #define AIO_SERVER      "garden-control"
 #define AIO_SERVERPORT  1883
-#define AIO_USERNAME    ""
-#define AIO_KEY         ""
+//#define AIO_USERNAME    ""
+//#define AIO_KEY         ""
 
 //Adafruit_BME280 bme;
 const char* ssid = SSID;
@@ -54,23 +54,24 @@ const char* wlanPwd = WLAN_KEY;
 //const char* hum_2 = "UweSolar2/bme/hum";
 //const char* temp_3 = "UweSolar3/bme/temp";
 
-String localIP = "254.254.0.111"; // fictive
-
+String localIP = ""; 
 char* gTemp2 = "-1";
-char* gPress2  = "999";
-char* gHum2 = "99";
-char* gRainProb = "24";
+char* gPress2  = "-1";
+char* gHum2 = "-1";
+char* gRainProb = "-1";
 char* gMoonPhase = "-1";
 char* gMoonRise = "-1";
 char* gMoonSet = "-1";
 char* gSunRise = "-1";
 char* gSunSet = "-1";
+char* gAzimut = "-1";
+char* gElevation = "-1";
 //#define PROGMEM
 
 WiFiClient wclient;
 
 // Setup the MQTT client class by passing in the WiFi client and MQTT server and login details.
-Adafruit_MQTT_Client mqtt(&wclient, AIO_SERVER, AIO_SERVERPORT, AIO_USERNAME, AIO_USERNAME, AIO_KEY);
+Adafruit_MQTT_Client mqtt(&wclient, AIO_SERVER, AIO_SERVERPORT);
 
 /****************************** Feeds ***************************************/
 
@@ -88,6 +89,8 @@ Adafruit_MQTT_Subscribe sunSet = Adafruit_MQTT_Subscribe(&mqtt, "sunset");
 Adafruit_MQTT_Subscribe moonRise = Adafruit_MQTT_Subscribe(&mqtt, "moonrise");
 Adafruit_MQTT_Subscribe moonSet = Adafruit_MQTT_Subscribe(&mqtt, "moonset");
 Adafruit_MQTT_Subscribe moonPhase = Adafruit_MQTT_Subscribe(&mqtt, "moonphase");
+Adafruit_MQTT_Subscribe azimut = Adafruit_MQTT_Subscribe(&mqtt, "azimut");
+Adafruit_MQTT_Subscribe elevation = Adafruit_MQTT_Subscribe(&mqtt, "elevation");
 
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, "fritz.box", 3600, 60000);
@@ -283,21 +286,21 @@ const unsigned char wind_speed[] PROGMEM = {
 ,0xc0,0x00,0x00,0x00,0xc0,0x00,0x00,0x00,0xc0,0x00,0x00,0x00,0xc0,0x00,0x00,0x00,0xc0,0x00,0x00,0x00,0x00,0x00,0x00,0x00
 };
 
-const unsigned char rain[] PROGMEM = {
-0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x0c,0x00,0x00,0x00,0x00
-,0x00,0x01,0xff,0xe0,0x00,0x00,0x00,0x00,0x07,0xff,0xf8,0x00,0x00,0x00,0x00,0x0f,0xff,0xfc,0x00,0x00,0x00,0x00,0x3f,0x80,0x7f,0x00,0x00,0x00
-,0x00,0x7e,0x00,0x1f,0x80,0x00,0x00,0x00,0x78,0x00,0x07,0x80,0x00,0x00,0x00,0xf0,0x00,0x03,0xc0,0x00,0x00,0x01,0xe0,0x00,0x01,0xec,0x00,0x00
-,0x01,0xe0,0x00,0x01,0xff,0xc0,0x00,0x03,0xc0,0x00,0x00,0xff,0xf0,0x00,0x03,0xc0,0x00,0x00,0xff,0xf8,0x00,0x03,0x80,0x00,0x00,0x40,0x7c,0x00
-,0x03,0x80,0x00,0x00,0x00,0x3e,0x00,0x07,0x80,0x00,0x00,0x00,0x1e,0x00,0x07,0x80,0x00,0x00,0x00,0x0f,0x00,0x07,0x80,0x00,0x00,0x00,0x07,0x00
-,0x07,0x80,0x00,0x00,0x00,0x07,0x00,0x03,0x80,0x00,0x00,0x00,0x07,0x80,0x03,0x80,0x00,0x00,0x00,0x07,0x80,0x03,0xc0,0x00,0x00,0x00,0x07,0x80
-,0x03,0xc0,0x78,0x00,0x78,0x07,0x80,0x01,0xe0,0x78,0x00,0x78,0x07,0x00,0x01,0xe0,0x78,0x00,0x78,0x0f,0x00,0x00,0xf0,0x78,0x00,0x78,0x0f,0x00
-,0x00,0x78,0x78,0x78,0x78,0x1e,0x00,0x00,0x78,0x78,0x78,0x78,0x3e,0x00,0x00,0x38,0x30,0x78,0x30,0x7c,0x00,0x00,0x08,0x00,0x78,0x00,0x78,0x00
-,0x00,0x00,0x00,0x78,0x00,0x70,0x00,0x00,0x00,0x00,0x78,0x00,0x40,0x00,0x00,0x00,0x00,0x30,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
-,0x00,0x00,0x78,0x00,0x78,0x00,0x00,0x00,0x00,0x78,0x00,0x78,0x00,0x00,0x00,0x00,0x78,0x00,0x78,0x00,0x00,0x00,0x00,0x78,0x00,0x78,0x00,0x00
-,0x00,0x00,0x78,0x78,0x78,0x00,0x00,0x00,0x00,0x78,0x78,0x78,0x00,0x00,0x00,0x00,0x30,0x78,0x30,0x00,0x00,0x00,0x00,0x00,0x78,0x00,0x00,0x00
-,0x00,0x00,0x00,0x78,0x00,0x00,0x00,0x00,0x00,0x00,0x78,0x00,0x00,0x00,0x00,0x00,0x00,0x30,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
-,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
-};
+//const unsigned char rain[] PROGMEM = {
+//0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x0c,0x00,0x00,0x00,0x00
+//,0x00,0x01,0xff,0xe0,0x00,0x00,0x00,0x00,0x07,0xff,0xf8,0x00,0x00,0x00,0x00,0x0f,0xff,0xfc,0x00,0x00,0x00,0x00,0x3f,0x80,0x7f,0x00,0x00,0x00
+//,0x00,0x7e,0x00,0x1f,0x80,0x00,0x00,0x00,0x78,0x00,0x07,0x80,0x00,0x00,0x00,0xf0,0x00,0x03,0xc0,0x00,0x00,0x01,0xe0,0x00,0x01,0xec,0x00,0x00
+//,0x01,0xe0,0x00,0x01,0xff,0xc0,0x00,0x03,0xc0,0x00,0x00,0xff,0xf0,0x00,0x03,0xc0,0x00,0x00,0xff,0xf8,0x00,0x03,0x80,0x00,0x00,0x40,0x7c,0x00
+//,0x03,0x80,0x00,0x00,0x00,0x3e,0x00,0x07,0x80,0x00,0x00,0x00,0x1e,0x00,0x07,0x80,0x00,0x00,0x00,0x0f,0x00,0x07,0x80,0x00,0x00,0x00,0x07,0x00
+//,0x07,0x80,0x00,0x00,0x00,0x07,0x00,0x03,0x80,0x00,0x00,0x00,0x07,0x80,0x03,0x80,0x00,0x00,0x00,0x07,0x80,0x03,0xc0,0x00,0x00,0x00,0x07,0x80
+//,0x03,0xc0,0x78,0x00,0x78,0x07,0x80,0x01,0xe0,0x78,0x00,0x78,0x07,0x00,0x01,0xe0,0x78,0x00,0x78,0x0f,0x00,0x00,0xf0,0x78,0x00,0x78,0x0f,0x00
+//,0x00,0x78,0x78,0x78,0x78,0x1e,0x00,0x00,0x78,0x78,0x78,0x78,0x3e,0x00,0x00,0x38,0x30,0x78,0x30,0x7c,0x00,0x00,0x08,0x00,0x78,0x00,0x78,0x00
+//,0x00,0x00,0x00,0x78,0x00,0x70,0x00,0x00,0x00,0x00,0x78,0x00,0x40,0x00,0x00,0x00,0x00,0x30,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+//,0x00,0x00,0x78,0x00,0x78,0x00,0x00,0x00,0x00,0x78,0x00,0x78,0x00,0x00,0x00,0x00,0x78,0x00,0x78,0x00,0x00,0x00,0x00,0x78,0x00,0x78,0x00,0x00
+//,0x00,0x00,0x78,0x78,0x78,0x00,0x00,0x00,0x00,0x78,0x78,0x78,0x00,0x00,0x00,0x00,0x30,0x78,0x30,0x00,0x00,0x00,0x00,0x00,0x78,0x00,0x00,0x00
+//,0x00,0x00,0x00,0x78,0x00,0x00,0x00,0x00,0x00,0x00,0x78,0x00,0x00,0x00,0x00,0x00,0x00,0x30,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+//,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+//};
 
 const unsigned char partly_cloudy_day[] PROGMEM = {
 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
@@ -331,9 +334,9 @@ const unsigned char partly_cloudy_day[] PROGMEM = {
 
 void setup(void) {
   Serial.begin(115200);
-  Serial.println("initialise_wifi BEGIN");
+  Serial.println(F("wifi BEGIN"));
   initialise_wifi();
-  Serial.println("initialise_wifi END ");
+  Serial.println(F("init wifi END "));
   
   temp2.setCallback(tempcallback);
   press2.setCallback(presscallback);
@@ -344,6 +347,8 @@ void setup(void) {
   moonRise.setCallback(moonrisecallback);
   moonSet.setCallback(moonsetcallback);
   moonPhase.setCallback(moonphasecallback);
+  moonPhase.setCallback(azimutcallback);
+  moonPhase.setCallback(elevationcallback);
 
 
   // Setup MQTT subscriptions
@@ -356,9 +361,10 @@ void setup(void) {
   mqtt.subscribe(&moonRise);
   mqtt.subscribe(&moonSet);
   mqtt.subscribe(&moonPhase);
+  mqtt.subscribe(&azimut);
+  mqtt.subscribe(&elevation);
 
   display.init(115200);
-
 
   timUtil.setTimeClient(timeClient);
   timUtil.init();
@@ -374,9 +380,9 @@ void loop() {
 
     // this is our 'wait for incoming subscription packets and callback em' busy subloop
  // try to spend your time here:
-    Serial.println("BEFORE processPackets");
+    Serial.println(F("BEFORE processPackets"));
     mqtt.processPackets(10000);
-    Serial.println("AFTER  processPackets");
+    Serial.println(F("AFTER  processPackets"));
 
     displayData();
     delay(20000);
@@ -385,28 +391,10 @@ void loop() {
 
 void displayData()
 {
-  int dateSubstringStart = 11;
-  int dateSubstringEnd = 16;
-  String curTime = timUtil.getTime();
-  String curDate = timUtil.getDate();
-  String outsideHumidity = gHum2;
-//  double surplus = 34;
-//  double regard = 45;
-  String precipProb = gRainProb;
-  double pressure = 1122;
+  
 //  String currentIcon = "weather.darksky.home.currently.icon";
-  String moonLight = "env.location.moonlight";
-  String moonRise = gMoonRise;
-  String moonSet = gMoonSet;
-  String moonPhase = gMoonPhase;
-  String sunSet =gSunSet;
-  String sunRise = gSunRise;
-  String temperature = gTemp2;
-  String temperatureMin = "-14";
-  String temperatureMax = "+2";
-  String currentlySummary = "Wetter Zusammenfassung";
-  String dailySummary = "Lokal veraenderliches Wetter, vereinzelt Schauer aber auch Sonnenschein oder Niederschlag";
-  double windSpeed = 25.09;
+  String dailySummary = F("Lokal veraenderliches Wetter, vereinzelt Schauer aber auch Sonnenschein");
+//  double windSpeed = 25.09;
   display.setRotation(2);
   display.setFont(&FreeMonoBold18pt7b);
   display.setTextColor(GxEPD_BLACK);
@@ -418,32 +406,24 @@ void displayData()
     display.fillScreen(GxEPD_WHITE);
     display.setFont(&FreeMonoBold9pt7b);
 
-    display.setCursor(10, 21); display.println(curTime);
-    display.setCursor(160, 21); display.print("Version 1.2");
+    display.setCursor(10, 21); display.println(timUtil.getTime());
+    display.setCursor(160, 21); display.print("Version 1.3");
     display.setCursor(300, 21); display.print(localIP);
-    display.setCursor(500, 21); display.println(curDate);
+    display.setCursor(500, 21); display.println(timUtil.getDate());
     drawDashedHLine(10, 30, 720, GxEPD_BLACK);
-
- /*   display_icon(330, 25, currentIcon);
-    display.setCursor(270, 42);
-    if (surplus > 0) {
-      display.println(surplus);
-    } else {
-      display.println((-1)*regard);
-    }*/
 
     display.setFont(&FreeMonoBold12pt7b);
     dashedRect(10,35,360,125, GxEPD_BLACK);
-    display_icon(2, 35+2, "temperature");
-    display.setCursor(70, 47+8); display.println(temperature+" Grad");
-    display.setCursor(70, 67+8); display.print(outsideHumidity); display.println("%");
-    display_icon(2, 65+8, "prob_rain");
-    display.setCursor(70, 98+8); display.print(precipProb); display.println(" Liter/qm");
+    display_icon(2, 35+2, F("temperature"));
+    display.setCursor(70, 47+8); display.println(String(gTemp2)+F(" Grad"));
+    display.setCursor(70, 67+8); display.print(gHum2); display.println("%");
+    display_icon(2, 65+8, F("prob_rain"));
+    display.setCursor(70, 98+8); display.print(gRainProb); display.println(F(" Liter/qm"));
 //    display_icon(100, 76+5, "wind_speed");
 //    display.setCursor(140, 98+5); display.print((int)windSpeed, DEC); display.println("km/h");
 
     //display.setFont(&FreeMonoBold9pt7b);
-    display_icon(15, 113+8, "barometer");
+    display_icon(15, 113+8, F("barometer"));
     display.setCursor(70, 135+8); display.print(gPress2); display.println("hPa");
 
     display.setFont(&FreeMonoBold9pt7b);
@@ -452,13 +432,16 @@ void displayData()
     drawDashedHLine(0, 220+20, 720, GxEPD_BLACK);
     display.setFont(&FreeMonoBold9pt7b);
     display_icon(10, 255+15, "sunrise_sunset");
-    display.setCursor(60, 275+15); display.println(sunRise);
-    display.setCursor(60, 289+15); display.println(sunSet);
+    display.setCursor(60, 275+15); display.println(gSunRise);
+    display.setCursor(60, 289+15); display.println(gSunSet);
     display.setFont(&FreeMonoBold18pt7b);
-    display_icon(237, 265+15, "moon_"+moonPhase);
+    display_icon(237, 265+15, "moon_"+String(gMoonPhase));
     display.setFont(&FreeMonoBold9pt7b);
-    display.setCursor(270, 275+15); display.println(moonRise);
-    display.setCursor(270, 289+15); display.println(moonSet);
+    display.setCursor(270, 275+15); display.println(gMoonRise);
+    display.setCursor(270, 289+15); display.println(gMoonSet);
+    drawDashedHLine(0, 320, 720, GxEPD_BLACK);
+    display.setCursor(60, 368); display.println("Azimut: " + String(gAzimut));
+    display.setCursor(60, 408); display.println("Höhe: " + String (gElevation));
   }
   while (display.nextPage());
 }
@@ -527,19 +510,19 @@ void dashedRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color) {
 
 void display_icon(int x, int y, String icon_name) {
   int scale = 10; // Adjust size as necessary
-  if (icon_name == "partly-cloudy-day")
+  if (icon_name == F("partly-cloudy-day"))
     display.drawBitmap(x, y, partly_cloudy_day, 54, 50, GxEPD_BLACK);
-  else if (icon_name == "clear-day")
+  else if (icon_name == F("clear-day"))
     display.drawBitmap(x, y, clear_day, 54, 50, GxEPD_BLACK);
-  else if (icon_name == "rain")
-    display.drawBitmap(x, y, rain, 54, 50, GxEPD_BLACK);
-  else if (icon_name == "sunrise_sunset")
+  //else if (icon_name == "rain")
+  //  display.drawBitmap(x, y, rain, 54, 50, GxEPD_BLACK);
+  else if (icon_name == F("sunrise_sunset"))
     display.drawBitmap(x, y, sunrise_sunset, 48, 36, GxEPD_BLACK);
-  else if (icon_name == "prob_rain")
+  else if (icon_name == F("prob_rain"))
     display.drawBitmap(x, y, prob_rain, 54, 50, GxEPD_BLACK);
-  else if (icon_name == "temperature")
+  else if (icon_name == F("temperature"))
     display.drawBitmap(x, y, temperature, 54, 50, GxEPD_BLACK);
-  else if (icon_name == "pressure")
+  else if (icon_name == F("pressure"))
     display.drawBitmap(x, y, pressure, 69, 64, GxEPD_BLACK);
   else if (icon_name == "moon_0")
     display.drawBitmap(x, y, moon_0_8, 24, 24, GxEPD_BLACK);
@@ -568,8 +551,8 @@ void display_icon(int x, int y, String icon_name) {
 // NETWORK STUFF
 
 void initialise_wifi() {
-    Serial.println("initialise_wifi");
-    WiFi.hostname("DisplayUnit");
+    Serial.println(F("init Wifi"));
+    WiFi.hostname(F("DisplayUnit"));
     // connect to WLAN
     WiFi.mode(WIFI_STA);
     WiFi.begin(ssid, wlanPwd);
@@ -577,7 +560,6 @@ void initialise_wifi() {
         delay(500);
         Serial.print(".");
     }
-    Serial.println("");
     Serial.print("Wifi Connected to ");
     Serial.println(ssid);
     Serial.println("IP Address: ");
@@ -586,22 +568,22 @@ void initialise_wifi() {
 
 }
 
-void print_wifi_status() {
-//   SSID des WiFi Netzwerkes ausgeben:
-  Serial.print("SSID: ");
-  Serial.println(ssid);
-
-  // WiFi IP Adresse des ESP32 ausgeben:
-  IPAddress ip = WiFi.localIP();
-  Serial.print("IP Address: ");
-  Serial.println(ip);
-
-  // WiFi Signalstaerke ausgeben:
-  long rssi = WiFi.RSSI();
-  Serial.print("signal strength (RSSI):");
-  Serial.print(rssi);
-  Serial.println(" dBm");
-}
+//void print_wifi_status() {
+////   SSID des WiFi Netzwerkes ausgeben:
+//  Serial.print("SSID: ");
+//  Serial.println(ssid);
+//
+//  // WiFi IP Adresse des ESP32 ausgeben:
+//  IPAddress ip = WiFi.localIP();
+//  Serial.print("IP Address: ");
+//  Serial.println(ip);
+//
+//  // WiFi Signalstaerke ausgeben:
+//  long rssi = WiFi.RSSI();
+//  Serial.print("signal strength (RSSI):");
+//  Serial.print(rssi);
+//  Serial.println(" dBm");
+//}
 // Function to connect and reconnect as necessary to the MQTT server.
 // Should be called in the loop function and it will take care if connecting.
 void MQTT_connect() {
@@ -617,14 +599,14 @@ void MQTT_connect() {
     uint8_t retries = 3;
     while ((ret = mqtt.connect()) != 0) { // connect will return 0 for connected
         Serial.println(mqtt.connectErrorString(ret));
-        Serial.println("Retrying MQTT connection in 10 seconds...");
+        Serial.println("Retrying MQTT conn in 10 seconds...");
         mqtt.disconnect();
         delay(10000);  // wait 10 seconds
         retries--;
         if (retries == 0) {
-            Serial.println(" last attempt MQTT connect FAILED -> enter FOREVER loop");
-            // basically die and wait for WDT to reset me
-            while (1);
+            Serial.println("Last attempt MQTT connect FAILED -> enter FOREVER loop");
+            // restart
+            ESP.restart();
         }
     }
     Serial.println("MQTT Connected!");
@@ -636,42 +618,52 @@ void tempcallback(char* x, uint16_t dummy) {
 }
 
 void presscallback(char* x, uint16_t dummy) {
-    Serial.print("pressure change: ");
+    Serial.print("pressure: ");
     Serial.println(x);
     gPress2 = x;
 }
 void humcallback(char* x, uint16_t dummy) {
-    Serial.print("humidity change: ");
+    Serial.print("humidity: ");
     Serial.println(x);
     gHum2 = x;
 }
 void rainProbcallback(char* x, uint16_t dummy) {
-    Serial.print("rain probability change: ");
+    Serial.print("rain: ");
     Serial.println(x);
     gRainProb = x;
 }
 void sunrisecallback(char* x, uint16_t dummy) {
-    Serial.print("sunrisecallback change: ");
+    Serial.print("sunrise: ");
     Serial.println(x);
     gSunRise = x;
 }
 void sunsetcallback(char* x, uint16_t dummy) {
-    Serial.print("sunsetcallback change: ");
+    Serial.print("sunset: ");
     Serial.println(x);
     gSunSet = x;
 }
 void moonrisecallback(char* x, uint16_t dummy) {
-    Serial.print("moonrisecallback change: ");
+    Serial.print("moonrise: ");
     Serial.println(x);
     gMoonRise = x;
 }
 void moonsetcallback(char* x, uint16_t dummy) {
-    Serial.print("moonsetcallback change: ");
+    Serial.print("moonset: ");
     Serial.println(x);
     gMoonSet = x;
 }
 void moonphasecallback(char* x, uint16_t dummy) {
-    Serial.print("moonphase update: ");
+    Serial.print(("moonphase: "));
     Serial.println(x);
     gMoonPhase = x;
+}
+void azimutcallback(char* x, uint16_t dummy) {
+    Serial.print(("azimut: "));
+    Serial.println(x);
+    gAzimut = x;
+}
+void elevationcallback(char* x, uint16_t dummy) {
+    Serial.print(("elevation: "));
+    Serial.println(x);
+    gElevation = x;
 }
