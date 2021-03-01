@@ -71,7 +71,7 @@ char* gElevation = "-1";
 WiFiClient wclient;
 
 // Setup the MQTT client class by passing in the WiFi client and MQTT server and login details.
-Adafruit_MQTT_Client mqtt(&wclient, AIO_SERVER, AIO_SERVERPORT);
+Adafruit_MQTT_Client mqtt(&wclient, AIO_SERVER, AIO_SERVERPORT,"","");
 
 /****************************** Feeds ***************************************/
 
@@ -334,6 +334,7 @@ const unsigned char partly_cloudy_day[] PROGMEM = {
 
 void setup(void) {
   Serial.begin(115200);
+
   Serial.println(F("wifi BEGIN"));
   initialise_wifi();
   Serial.println(F("init wifi END "));
@@ -364,10 +365,11 @@ void setup(void) {
   mqtt.subscribe(&azimuth);
   mqtt.subscribe(&elevation);
 
-  display.init(115200);
 
   timUtil.setTimeClient(timeClient);
   timUtil.init();
+  display.init(115200);
+
  }
 
 void loop() {
@@ -441,7 +443,7 @@ void displayData()
     display.setCursor(270, 289+15); display.println(gMoonSet);
     drawDashedHLine(0, 320, 720, GxEPD_BLACK);
     display.setCursor(60, 368); display.println("Azimut: " + String(gAzimut));
-    display.setCursor(60, 408); display.println("Höhe: " + String (gElevation));
+    display.setCursor(60, 408); display.println("Hoehe: " + String (gElevation));
   }
   while (display.nextPage());
 }
@@ -555,9 +557,15 @@ void initialise_wifi() {
     WiFi.hostname(F("DisplayUnit"));
     // connect to WLAN
     WiFi.mode(WIFI_STA);
+    uint8_t retries = 5;
     WiFi.begin(ssid, wlanPwd);
     while (WiFi.status() != WL_CONNECTED) {
-        delay(500);
+        retries--;
+        if (retries == 0) {
+            Serial.println("Give up connecting to WLAN " + String(ssid));
+            ESP.restart();
+        }
+        delay(5000);
         Serial.print(".");
     }
     Serial.print("Wifi Connected to ");
