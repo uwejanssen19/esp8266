@@ -38,7 +38,7 @@
 #include "cred.h" // do not maintain this file in source control
 
 
-#define AIO_SERVER      "garden-control"
+#define AIO_SERVER      "192.168.178.23"
 #define AIO_SERVERPORT  1883
 //#define AIO_USERNAME    ""
 //#define AIO_KEY         ""
