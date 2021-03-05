@@ -66,6 +66,7 @@ char* gSunRise = "-1";
 char* gSunSet = "-1";
 char* gAzimut = "-1";
 char* gElevation = "-1";
+char* gAstroTime = "-1";
 //#define PROGMEM
 
 WiFiClient wclient;
@@ -91,6 +92,7 @@ Adafruit_MQTT_Subscribe moonSet = Adafruit_MQTT_Subscribe(&mqtt, "moonset");
 Adafruit_MQTT_Subscribe moonPhase = Adafruit_MQTT_Subscribe(&mqtt, "moonphase");
 Adafruit_MQTT_Subscribe azimuth = Adafruit_MQTT_Subscribe(&mqtt, "azimut");
 Adafruit_MQTT_Subscribe elevation = Adafruit_MQTT_Subscribe(&mqtt, "elevation");
+Adafruit_MQTT_Subscribe astrotimestamp = Adafruit_MQTT_Subscribe(&mqtt, "astrotimestamp");
 
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, "fritz.box", 3600, 60000);
@@ -350,6 +352,7 @@ void setup(void) {
   moonPhase.setCallback(moonphasecallback);
   azimuth.setCallback(azimutcallback);
   elevation.setCallback(elevationcallback);
+  astrotimestamp.setCallback(astrotimestampcallback);
 
 
   // Setup MQTT subscriptions
@@ -364,6 +367,7 @@ void setup(void) {
   mqtt.subscribe(&moonPhase);
   mqtt.subscribe(&azimuth);
   mqtt.subscribe(&elevation);
+  mqtt.subscribe(&astrotimestamp);
 
 
   timUtil.setTimeClient(timeClient);
@@ -442,8 +446,9 @@ void displayData()
     display.setCursor(270, 275+15); display.println(gMoonRise);
     display.setCursor(270, 289+15); display.println(gMoonSet);
     drawDashedHLine(0, 320, 720, GxEPD_BLACK);
-    display.setCursor(60, 368); display.println("Azimut: " + String(gAzimut));
-    display.setCursor(60, 408); display.println("Hoehe: " + String (gElevation));
+    display.setCursor(60, 368); display.println("Sonnenstand um: " + String(gAstroTime));
+    display.setCursor(60, 408); display.println("Azimut: " + String(gAzimut));
+    display.setCursor(60, 428); display.println("Hoehe: " + String (gElevation));
   }
   while (display.nextPage());
 }
@@ -674,4 +679,9 @@ void elevationcallback(char* x, uint16_t dummy) {
     Serial.print(("elevation: "));
     Serial.println(x);
     gElevation = x;
+}
+void astrotimestampcallback(char* x, uint16_t dummy) {
+    Serial.print(("astrotime: "));
+    Serial.println(x);
+    gAstroTime = x;
 }
