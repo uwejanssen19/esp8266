@@ -453,7 +453,7 @@ void displayData()
     display.setFont(&FreeMonoBold9pt7b);
     display.setCursor(270, 275+15); display.println(gMoonRise);
     display.setCursor(270, 289 + 15); display.println(gMoonSet);
-    display.setCursor(320, 289 + 15); display.println("Aktuell: " + String(gAstroEvent));
+    display.setCursor(350, 289 + 15); display.println(gAstroEvent);
 
     drawDashedHLine(0, 320, 720, GxEPD_BLACK);
     display.setCursor(60, 368); display.println("Sonnenstand um: " + String(gAstroTime));
