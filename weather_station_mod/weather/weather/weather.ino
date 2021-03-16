@@ -68,6 +68,7 @@ char* gAzimut = "-1";
 char* gElevation = "-1";
 char* gAstroTime = "-1";
 char* gSunCulm = "-1";
+char* gAstroEvent = "Waiting ...";
 //#define PROGMEM
 
 WiFiClient wclient;
@@ -95,6 +96,7 @@ Adafruit_MQTT_Subscribe azimuth = Adafruit_MQTT_Subscribe(&mqtt, "azimut");
 Adafruit_MQTT_Subscribe elevation = Adafruit_MQTT_Subscribe(&mqtt, "elevation");
 Adafruit_MQTT_Subscribe astrotimestamp = Adafruit_MQTT_Subscribe(&mqtt, "astrotimestamp");
 Adafruit_MQTT_Subscribe sunculm = Adafruit_MQTT_Subscribe(&mqtt, "sunculm");
+Adafruit_MQTT_Subscribe astroevent = Adafruit_MQTT_Subscribe(&mqtt, "astroevent");
 
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, "fritz.box", 3600, 60000);
@@ -356,6 +358,7 @@ void setup(void) {
   elevation.setCallback(elevationcallback);
   astrotimestamp.setCallback(astrotimestampcallback);
   sunculm.setCallback(sunculmcallback);
+  astroevent.setCallback(astroeventcallback);
 
 
   // Setup MQTT subscriptions
@@ -372,6 +375,7 @@ void setup(void) {
   mqtt.subscribe(&elevation);
   mqtt.subscribe(&astrotimestamp);
   mqtt.subscribe(&sunculm);
+  mqtt.subscribe(&astroevent);
 
 
   timUtil.setTimeClient(timeClient);
@@ -448,7 +452,9 @@ void displayData()
     display_icon(237, 265+15, "moon_"+String(gMoonPhase));
     display.setFont(&FreeMonoBold9pt7b);
     display.setCursor(270, 275+15); display.println(gMoonRise);
-    display.setCursor(270, 289+15); display.println(gMoonSet);
+    display.setCursor(270, 289 + 15); display.println(gMoonSet);
+    display.setCursor(320, 289 + 15); display.println("Aktuell: " + String(gAstroEvent));
+
     drawDashedHLine(0, 320, 720, GxEPD_BLACK);
     display.setCursor(60, 368); display.println("Sonnenstand um: " + String(gAstroTime));
     display.setCursor(300, 368); display.println("Azimut: " + String(gAzimut));
@@ -694,4 +700,9 @@ void sunculmcallback(char* x, uint16_t dummy) {
     Serial.print(("sunculm: "));
     Serial.println(x);
     gSunCulm = x;
+}
+void astroeventcallback(char* x, uint16_t dummy) {
+    Serial.print(("astroevent: "));
+    Serial.println(x);
+    gAstroEvent = x;
 }
