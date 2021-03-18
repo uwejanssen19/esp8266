@@ -69,6 +69,7 @@ char* gElevation = "-1";
 char* gAstroTime = "-1";
 char* gSunCulm = "-1";
 char* gAstroEvent = "Waiting ...";
+char* gLastEventTime = "99:99";
 //#define PROGMEM
 
 WiFiClient wclient;
@@ -453,7 +454,7 @@ void displayData()
     display.setFont(&FreeMonoBold9pt7b);
     display.setCursor(270, 275+15); display.println(gMoonRise);
     display.setCursor(270, 289 + 15); display.println(gMoonSet);
-    display.setCursor(350, 289 + 15); display.println(gAstroEvent);
+    display.setCursor(350, 289 + 15); display.println(String(gLastEventTime)+": "+String(gAstroEvent));
 
     drawDashedHLine(0, 320, 720, GxEPD_BLACK);
     display.setCursor(60, 368); display.println("Sonnenstand um: " + String(gAstroTime));
@@ -695,6 +696,7 @@ void astrotimestampcallback(char* x, uint16_t dummy) {
     Serial.print(("astrotime: "));
     Serial.println(x);
     gAstroTime = x;
+    strcpy(gLastEventTime, gAstroTime);
 }
 void sunculmcallback(char* x, uint16_t dummy) {
     Serial.print(("sunculm: "));
@@ -705,4 +707,7 @@ void astroeventcallback(char* x, uint16_t dummy) {
     Serial.print(("astroevent: "));
     Serial.println(x);
     gAstroEvent = x;
+    strcpy(gLastEventTime,timUtil.getTime().c_str());
+   
+
 }
