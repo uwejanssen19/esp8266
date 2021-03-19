@@ -452,7 +452,7 @@ void displayData()
     display.setFont(&FreeMonoBold18pt7b);
     display_icon(237, 265+15, "moon_"+String(gMoonPhase));
     display.setFont(&FreeMonoBold9pt7b);
-    display.setCursor(270, 275+15); display.println(gMoonRise);
+    display.setCursor(270, 275 + 15); display.println(gMoonRise); display.setCursor(350, 275 + 15); display.println("Letzter Eintrag");
     display.setCursor(270, 289 + 15); display.println(gMoonSet);
     display.setCursor(350, 289 + 15); display.println(String(gLastEventTime)+": "+String(gAstroEvent));
 
@@ -696,7 +696,7 @@ void astrotimestampcallback(char* x, uint16_t dummy) {
     Serial.print(("astrotime: "));
     Serial.println(x);
     gAstroTime = x;
-    strcpy(gLastEventTime, gAstroTime);
+//    strcpy(gLastEventTime, gAstroTime);
 }
 void sunculmcallback(char* x, uint16_t dummy) {
     Serial.print(("sunculm: "));
