@@ -40,6 +40,7 @@
 
 #define AIO_SERVER      "192.168.178.23"
 #define AIO_SERVERPORT  1883
+#define MY_QOS MQTT_QOS_0
 //#define AIO_USERNAME    ""
 //#define AIO_KEY         ""
 
@@ -55,21 +56,22 @@ const char* wlanPwd = WLAN_KEY;
 //const char* temp_3 = "UweSolar3/bme/temp";
 
 String localIP = ""; 
-char* gTemp2 = "-1";
-char* gPress2  = "-1";
-char* gHum2 = "-1";
-char* gRainProb = "-1";
-char* gMoonPhase = "-1";
-char* gMoonRise = "-1";
-char* gMoonSet = "-1";
-char* gSunRise = "-1";
-char* gSunSet = "-1";
-char* gAzimut = "-1";
-char* gElevation = "-1";
-char* gAstroTime = "-1";
-char* gSunCulm = "-1";
-char* gAstroEvent = "Waiting ...";
-char* gLastEventTime = "99:99";
+String gTemp2 = "-1";
+String gPress2  = "-1";
+String gHum2 = "-1";
+String gRainProb = "-1";
+String gMoonPhase = "-1";
+String gMoonRise = "-1";
+String gMoonSet = "-1";
+String gSunRise = "-1";
+String gSunSet = "-1";
+String gAzimut = "-1";
+String gElevation = "-1";
+String gAstroTime = "-1";
+String gSunCulm = "-1";
+String gAstroEvent = "Waiting ...";
+String gLastEventTime = "99:99";
+String gLastSolarData = "HH:MM";
 //#define PROGMEM
 
 WiFiClient wclient;
@@ -83,21 +85,21 @@ Adafruit_MQTT_Client mqtt(&wclient, AIO_SERVER, AIO_SERVERPORT,"","");
 //Adafruit_MQTT_Subscribe time2 = Adafruit_MQTT_Subscribe(&mqtt, "UweSolar2/time/value");
 
 // Setup a feed called 'slider' for subscribing to changes on the slider
-//Adafruit_MQTT_Subscribe slider = Adafruit_MQTT_Subscribe(&mqtt, AIO_USERNAME "/feeds/slider", MQTT_QOS_1);
-Adafruit_MQTT_Subscribe temp2 = Adafruit_MQTT_Subscribe(&mqtt, "UweSolar2/bme/temp");
-Adafruit_MQTT_Subscribe press2 = Adafruit_MQTT_Subscribe(&mqtt, "UweSolar2/bme/press");
-Adafruit_MQTT_Subscribe hum2 = Adafruit_MQTT_Subscribe(&mqtt, "UweSolar2/bme/hum");
-Adafruit_MQTT_Subscribe rainProb = Adafruit_MQTT_Subscribe(&mqtt, "rainProb");
-Adafruit_MQTT_Subscribe sunRise = Adafruit_MQTT_Subscribe(&mqtt, "sunrise");
-Adafruit_MQTT_Subscribe sunSet = Adafruit_MQTT_Subscribe(&mqtt, "sunset");
-Adafruit_MQTT_Subscribe moonRise = Adafruit_MQTT_Subscribe(&mqtt, "moonrise");
-Adafruit_MQTT_Subscribe moonSet = Adafruit_MQTT_Subscribe(&mqtt, "moonset");
-Adafruit_MQTT_Subscribe moonPhase = Adafruit_MQTT_Subscribe(&mqtt, "moonphase");
-Adafruit_MQTT_Subscribe azimuth = Adafruit_MQTT_Subscribe(&mqtt, "azimut");
-Adafruit_MQTT_Subscribe elevation = Adafruit_MQTT_Subscribe(&mqtt, "elevation");
-Adafruit_MQTT_Subscribe astrotimestamp = Adafruit_MQTT_Subscribe(&mqtt, "astrotimestamp");
-Adafruit_MQTT_Subscribe sunculm = Adafruit_MQTT_Subscribe(&mqtt, "sunculm");
-Adafruit_MQTT_Subscribe astroevent = Adafruit_MQTT_Subscribe(&mqtt, "astroevent");
+//Adafruit_MQTT_Subscribe slider = Adafruit_MQTT_Subscribe(&mqtt, AIO_USERNAME "/feeds/slider", MY_QOS);
+Adafruit_MQTT_Subscribe temp2 = Adafruit_MQTT_Subscribe(&mqtt, "UweSolar2/bme/temp", MY_QOS);
+Adafruit_MQTT_Subscribe press2 = Adafruit_MQTT_Subscribe(&mqtt, "UweSolar2/bme/press", MY_QOS);
+Adafruit_MQTT_Subscribe hum2 = Adafruit_MQTT_Subscribe(&mqtt, "UweSolar2/bme/hum", MY_QOS);
+Adafruit_MQTT_Subscribe rainProb = Adafruit_MQTT_Subscribe(&mqtt, "rainProb", MY_QOS);
+Adafruit_MQTT_Subscribe sunRise = Adafruit_MQTT_Subscribe(&mqtt, "sunrise", MY_QOS);
+Adafruit_MQTT_Subscribe sunSet = Adafruit_MQTT_Subscribe(&mqtt, "sunset", MY_QOS);
+Adafruit_MQTT_Subscribe moonRise = Adafruit_MQTT_Subscribe(&mqtt, "moonrise", MY_QOS);
+Adafruit_MQTT_Subscribe moonSet = Adafruit_MQTT_Subscribe(&mqtt, "moonset", MY_QOS);
+Adafruit_MQTT_Subscribe moonPhase = Adafruit_MQTT_Subscribe(&mqtt, "moonphase", MY_QOS);
+Adafruit_MQTT_Subscribe azimuth = Adafruit_MQTT_Subscribe(&mqtt, "azimut", MY_QOS);
+Adafruit_MQTT_Subscribe elevation = Adafruit_MQTT_Subscribe(&mqtt, "elevation", MY_QOS);
+Adafruit_MQTT_Subscribe astrotimestamp = Adafruit_MQTT_Subscribe(&mqtt, "astrotimestamp", MY_QOS);
+Adafruit_MQTT_Subscribe sunculm = Adafruit_MQTT_Subscribe(&mqtt, "sunculm", MY_QOS);
+Adafruit_MQTT_Subscribe astroevent = Adafruit_MQTT_Subscribe(&mqtt, "astroevent", MY_QOS);
 
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, "fritz.box", 3600, 60000);
@@ -408,7 +410,7 @@ void displayData()
 {
   
 //  String currentIcon = "weather.darksky.home.currently.icon";
-  String dailySummary = F("Lokal veraenderliches Wetter, vereinzelt Schauer aber auch Sonnenschein");
+  String dailySummary = F("Lokal veraenderliches Wetter, vereinzelt Schauer oder Sonnenschein");
 //  double windSpeed = 25.09;
   display.setRotation(2);
   display.setFont(&FreeMonoBold18pt7b);
@@ -430,7 +432,7 @@ void displayData()
     display.setFont(&FreeMonoBold12pt7b);
     dashedRect(10,35,360,125, GxEPD_BLACK);
     display_icon(2, 35+2, F("temperature"));
-    display.setCursor(70, 47+8); display.println(String(gTemp2)+F(" Grad"));
+    display.setCursor(70, 47+8); display.println(String(gTemp2)+F(" Grad (") + String(gLastSolarData)+ F(")"));
     display.setCursor(70, 67+8); display.print(gHum2); display.println("%");
     display_icon(2, 65+8, F("prob_rain"));
     display.setCursor(70, 98+8); display.print(gRainProb); display.println(F(" Liter/qm"));
@@ -454,7 +456,7 @@ void displayData()
     display.setFont(&FreeMonoBold9pt7b);
     display.setCursor(270, 275 + 15); display.println(gMoonRise); display.setCursor(350, 275 + 15); display.println("Letzter Eintrag");
     display.setCursor(270, 289 + 15); display.println(gMoonSet);
-    display.setCursor(350, 289 + 15); display.println(String(gLastEventTime)+": "+String(gAstroEvent));
+    display.setCursor(350, 289 + 15); display.println(gLastEventTime+": "+gAstroEvent);
 
     drawDashedHLine(0, 320, 720, GxEPD_BLACK);
     display.setCursor(60, 368); display.println("Sonnenstand um: " + String(gAstroTime));
@@ -640,6 +642,7 @@ void tempcallback(char* x, uint16_t dummy) {
     Serial.print("temperature change: ");
     Serial.println(x);
     gTemp2 = x;
+    gLastSolarData  =  timUtil.getTime();
 }
 
 void presscallback(char* x, uint16_t dummy) {
@@ -707,7 +710,5 @@ void astroeventcallback(char* x, uint16_t dummy) {
     Serial.print(("astroevent: "));
     Serial.println(x);
     gAstroEvent = x;
-    strcpy(gLastEventTime,timUtil.getTime().c_str());
-   
-
+    gLastEventTime = timUtil.getTime();
 }
