@@ -43,6 +43,10 @@
 #define MY_QOS MQTT_QOS_0
 //#define AIO_USERNAME    ""
 //#define AIO_KEY         ""
+// define variable name of the callback function parameterized by 
+#define CALLBACK_REF(NAME) callback ## NAME
+// define callback function
+#define CALLBACK(NAME, ADD_ON) void CALLBACK_REF(NAME) (char* x, uint16_t dummy) {g ## NAME = x;if (ADD_ON){gLastSolarData = timUtil.getTime();}}
 
 //Adafruit_BME280 bme;
 const char* ssid = SSID;
@@ -56,7 +60,9 @@ const char* wlanPwd = WLAN_KEY;
 //const char* temp_3 = "UweSolar3/bme/temp";
 
 String localIP = ""; 
+String gTemp1 = "-1";
 String gTemp2 = "-1";
+String gTemp3 = "-1";
 String gPress2  = "-1";
 String gHum2 = "-1";
 String gRainProb = "-1";
@@ -72,7 +78,6 @@ String gSunCulm = "-1";
 String gAstroEvent = "Waiting ...";
 String gLastEventTime = "99:99";
 String gLastSolarData = "HH:MM";
-//#define PROGMEM
 
 WiFiClient wclient;
 
@@ -85,7 +90,6 @@ Adafruit_MQTT_Client mqtt(&wclient, AIO_SERVER, AIO_SERVERPORT,"","");
 //Adafruit_MQTT_Subscribe time2 = Adafruit_MQTT_Subscribe(&mqtt, "UweSolar2/time/value");
 
 // Setup a feed called 'slider' for subscribing to changes on the slider
-//Adafruit_MQTT_Subscribe slider = Adafruit_MQTT_Subscribe(&mqtt, AIO_USERNAME "/feeds/slider", MY_QOS);
 Adafruit_MQTT_Subscribe temp2 = Adafruit_MQTT_Subscribe(&mqtt, "UweSolar2/bme/temp", MY_QOS);
 Adafruit_MQTT_Subscribe press2 = Adafruit_MQTT_Subscribe(&mqtt, "UweSolar2/bme/press", MY_QOS);
 Adafruit_MQTT_Subscribe hum2 = Adafruit_MQTT_Subscribe(&mqtt, "UweSolar2/bme/hum", MY_QOS);
@@ -348,19 +352,19 @@ void setup(void) {
   initialise_wifi();
   Serial.println(F("init wifi END "));
   
-  temp2.setCallback(tempcallback);
-  press2.setCallback(presscallback);
-  hum2.setCallback(humcallback);
-  rainProb.setCallback(rainProbcallback);
-  sunRise.setCallback(sunrisecallback);
-  sunSet.setCallback(sunsetcallback);
-  moonRise.setCallback(moonrisecallback);
-  moonSet.setCallback(moonsetcallback);
-  moonPhase.setCallback(moonphasecallback);
-  azimuth.setCallback(azimutcallback);
-  elevation.setCallback(elevationcallback);
-  astrotimestamp.setCallback(astrotimestampcallback);
-  sunculm.setCallback(sunculmcallback);
+  temp2.setCallback(CALLBACK_REF(Temp2));
+  press2.setCallback(CALLBACK_REF(Press2));
+  hum2.setCallback(CALLBACK_REF(Hum2));
+  rainProb.setCallback(CALLBACK_REF(RainProb));
+  sunRise.setCallback(CALLBACK_REF(SunRise));
+  sunSet.setCallback(CALLBACK_REF(SunSet));
+  moonRise.setCallback(CALLBACK_REF(MoonRise));
+  moonSet.setCallback(CALLBACK_REF(MoonSet));
+  moonPhase.setCallback(CALLBACK_REF(MoonPhase));
+  azimuth.setCallback(CALLBACK_REF(Azimut));
+  elevation.setCallback(CALLBACK_REF(Elevation));
+  astrotimestamp.setCallback(CALLBACK_REF(AstroTime));
+  sunculm.setCallback(CALLBACK_REF(SunCulm));
   astroevent.setCallback(astroeventcallback);
 
 
@@ -638,77 +642,23 @@ void MQTT_connect() {
     }
     Serial.println("MQTT Connected!");
 }
-void tempcallback(char* x, uint16_t dummy) {
-    Serial.print("temperature change: ");
-    Serial.println(x);
-    gTemp2 = x;
-    gLastSolarData  =  timUtil.getTime();
-}
 
-void presscallback(char* x, uint16_t dummy) {
-    Serial.print("pressure: ");
-    Serial.println(x);
-    gPress2 = x;
-}
-void humcallback(char* x, uint16_t dummy) {
-    Serial.print("humidity: ");
-    Serial.println(x);
-    gHum2 = x;
-}
-void rainProbcallback(char* x, uint16_t dummy) {
-    Serial.print("rain: ");
-    Serial.println(x);
-    gRainProb = x;
-}
-void sunrisecallback(char* x, uint16_t dummy) {
-    Serial.print("sunrise: ");
-    Serial.println(x);
-    gSunRise = x;
-}
-void sunsetcallback(char* x, uint16_t dummy) {
-    Serial.print("sunset: ");
-    Serial.println(x);
-    gSunSet = x;
-}
-void moonrisecallback(char* x, uint16_t dummy) {
-    Serial.print("moonrise: ");
-    Serial.println(x);
-    gMoonRise = x;
-}
-void moonsetcallback(char* x, uint16_t dummy) {
-    Serial.print("moonset: ");
-    Serial.println(x);
-    gMoonSet = x;
-}
-void moonphasecallback(char* x, uint16_t dummy) {
-    Serial.print(("moonphase: "));
-    Serial.println(x);
-    gMoonPhase = x;
-}
-void azimutcallback(char* x, uint16_t dummy) {
-    Serial.print(("azimut: "));
-    Serial.println(x);
-    gAzimut = x;
-}
-void elevationcallback(char* x, uint16_t dummy) {
-    Serial.print(("elevation: "));
-    Serial.println(x);
-    gElevation = x;
-}
-void astrotimestampcallback(char* x, uint16_t dummy) {
-    Serial.print(("astrotime: "));
-    Serial.println(x);
-    gAstroTime = x;
-//    strcpy(gLastEventTime, gAstroTime);
-}
-void sunculmcallback(char* x, uint16_t dummy) {
-    Serial.print(("sunculm: "));
-    Serial.println(x);
-    gSunCulm = x;
-}
+
+CALLBACK(Temp2, true)
+CALLBACK(Press2, false)
+CALLBACK(Hum2, false)
+CALLBACK(RainProb, false)
+CALLBACK(SunRise, false)
+CALLBACK(SunSet, false)
+CALLBACK(MoonRise, false)
+CALLBACK(MoonSet, false)
+CALLBACK(MoonPhase, false)
+CALLBACK(Azimut, false)
+CALLBACK(Elevation, false)
+CALLBACK(AstroTime, false)
+CALLBACK(SunCulm, false)
+
 void astroeventcallback(char* x, uint16_t dummy) {
-    Serial.print(("astroevent: "));
-    Serial.println(x);
     gAstroEvent = x;
     gLastEventTime = timUtil.getTime();
 }
