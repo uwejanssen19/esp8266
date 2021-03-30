@@ -1,4 +1,3 @@
-// TimUtil.h
 
 #ifndef _TIMUTIL_h
 #define _TIMUTIL_h
@@ -9,17 +8,15 @@
 	#include "WProgram.h"
 #endif
 
-#include <WiFiUdp.h>
-#include <TimeLib.h>
-#include <NTPClient.h>
+#include <Time.h>
+// https://github.com/nayarsystems/posix_tz_db/blob/master/zones.csv
+constexpr auto MY_TZ = "CET-1CEST,M3.5.0/02,M10.5.0/03" ;
 
 class TimUtilClass
 {
  private:
 	 String mTime = "no time";
 	 String mDate = "no date";
-	 WiFiUDP ntpUDP;
-	 NTPClient mTimeClient;
  protected:
 
  public:
@@ -28,7 +25,6 @@ class TimUtilClass
 	String getDate();
 	void update();
 	TimUtilClass();
-	void setTimeClient(NTPClient ntpcl);
 };
 
 extern TimUtilClass TimUtil;

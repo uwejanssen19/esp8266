@@ -1,3 +1,4 @@
+
 #include <Adafruit_MQTT_FONA.h>
 #include <Adafruit_MQTT_Client.h>
 #include <Adafruit_MQTT.h>
@@ -105,8 +106,8 @@ Adafruit_MQTT_Subscribe astrotimestamp = Adafruit_MQTT_Subscribe(&mqtt, "astroti
 Adafruit_MQTT_Subscribe sunculm = Adafruit_MQTT_Subscribe(&mqtt, "sunculm", MY_QOS);
 Adafruit_MQTT_Subscribe astroevent = Adafruit_MQTT_Subscribe(&mqtt, "astroevent", MY_QOS);
 
-WiFiUDP ntpUDP;
-NTPClient timeClient(ntpUDP, "fritz.box", 3600, 60000);
+//WiFiUDP ntpUDP;
+//NTPClient timeClient(ntpUDP, "de.pool.ntp.org", 3600, 60000);
 
 TimUtilClass timUtil;
 
@@ -385,7 +386,7 @@ void setup(void) {
   mqtt.subscribe(&astroevent);
 
 
-  timUtil.setTimeClient(timeClient);
+//  timUtil.setTimeClient(timeClient);
   timUtil.init();
   display.init(115200);
 
