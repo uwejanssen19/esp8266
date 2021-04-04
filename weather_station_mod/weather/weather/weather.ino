@@ -105,7 +105,7 @@ void setup(void) {
   elevation.setCallback(CALLBACK_REF(Elevation));
   astrotimestamp.setCallback(CALLBACK_REF(AstroTime));
   sunculm.setCallback(CALLBACK_REF(SunCulm));
-  astroevent.setCallback(astroeventcallback);
+  astroevent.setCallback(CALLBACK_REF(AstroEvent));
 
 
   // Setup MQTT subscriptions
@@ -239,8 +239,9 @@ CALLBACK(Azimut, {})
 CALLBACK(Elevation, {})
 CALLBACK(AstroTime, {})
 CALLBACK(SunCulm, {})
+CALLBACK(AstroEvent, { unitStorage.gLastEventTime = timUtil.getTime(); })
 
-void astroeventcallback(char* x, uint16_t dummy) {
-    unitStorage.gAstroEvent = x;
-    unitStorage.gLastEventTime = timUtil.getTime();
-}
+//void astroeventcallback(char* x, uint16_t dummy) {
+//    unitStorage.gAstroEvent = x;
+//    unitStorage.gLastEventTime = timUtil.getTime();
+//}

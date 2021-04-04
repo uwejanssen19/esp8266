@@ -4,9 +4,6 @@
 #define NEED_DISPLAY_DEF
 #include "DisplayUtil.h"
 
-// forward deklaration of instance display which is defined inside "GxEPD2_display_selection_new_style.h"
-extern GxEPD2_BW<GxEPD2_420, GxEPD2_420::HEIGHT> display;
-
 
 // Define each of the *icons for display
 
@@ -266,7 +263,7 @@ void DisplayUtil::displayData(TimUtilClass timUtil, UnitStorageClass unitStorage
             display.setFont(&FreeMonoBold9pt7b);
 
             display.setCursor(X_LINE_1, Y_LINE_1); display.println(timUtil.getTime());
-            display.setCursor(X_VERSION, Y_LINE_1); display.print("Version 1.05");
+            display.setCursor(X_VERSION, Y_LINE_1); display.print(VERSION);
             display.setCursor(X_IP, Y_LINE_1); display.print(unitStorage.localIP);
             display.setCursor(X_DATE, Y_LINE_1); display.println(timUtil.getDate());
             drawDashedHLine(X_LINE_1, 30, HLINE1_LEN, GxEPD_BLACK);
@@ -280,7 +277,7 @@ void DisplayUtil::displayData(TimUtilClass timUtil, UnitStorageClass unitStorage
 
 
             display.setCursor(HUM_X, HUM_Y); display.print(unitStorage.gHum2); display.println("%");
-            display_icon(LEFTMOST_X, HUM_Y + 8, F("prob_rain"));
+            display_icon(LEFTMOST_X, HUM_Y + 4, F("prob_rain"));
             display.setCursor(TEMP1_X, RAIN_Y); display.print(unitStorage.gRainProb); display.println(F(" Liter/qm"));
             display_icon(PRESS_ICON_X, PRESS_ICON_Y, F("barometer"));
             display.setCursor(PRESS_X, PRESS_Y); display.print(unitStorage.gPress2); display.println("hPa");
