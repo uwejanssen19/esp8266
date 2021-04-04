@@ -91,8 +91,10 @@
 // adapt the constructor parameters to your wiring 
 // rpi adapter with 8266 -> does not work 
 //GxEPD2_DISPLAY_CLASS<GxEPD2_DRIVER_CLASS, MAX_HEIGHT(GxEPD2_DRIVER_CLASS)> display(GxEPD2_DRIVER_CLASS(/*CS=D8*/ EPD_CS, /*DC=D3*/ 0, /*RST=D4*/ 2, /*BUSY=D2*/ 4));
+#ifdef NEED_DISPLAY_DEF
 // mapping of Waveshare e-Paper ESP8266 Driver Board, new version modified 8.2.2021 uj
 GxEPD2_DISPLAY_CLASS<GxEPD2_DRIVER_CLASS, MAX_HEIGHT(GxEPD2_DRIVER_CLASS)> display(GxEPD2_DRIVER_CLASS(/*CS=15*/ EPD_CS, /*DC=4*/ 4, /*RST=2*/ 5, /*BUSY=5*/ 16));
+#endif
 // mapping of Waveshare e-Paper ESP8266 Driver Board, old version
 //GxEPD2_DISPLAY_CLASS<GxEPD2_DRIVER_CLASS, MAX_HEIGHT(GxEPD2_DRIVER_CLASS)> display(GxEPD2_DRIVER_CLASS(/*CS=15*/ EPD_CS, /*DC=4*/ 4, /*RST=5*/ 5, /*BUSY=16*/ 16));
 #endif

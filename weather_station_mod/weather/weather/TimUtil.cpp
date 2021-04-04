@@ -3,8 +3,22 @@
 // 
 
 #include "TimUtil.h"
+#include <assert.h>
 time_t now;                         // this is the epoch
 tm tm;                              // the structure tm holds time information in a more convient way
+
+//void TimUtilClass::setTime()
+//{
+//	constexpr auto LENGTH = 6;
+//	char buffer[LENGTH];
+//	//String localTime = String(tm.tm_hour) + ":" + String(tm.tm_min);
+//	strftime(buffer, LENGTH, "%H:%M", &tm);
+//}
+
+//void TimUtilClass::setDate(const String date)
+//{
+//	mDate = date;
+//}
 
 void TimUtilClass::init() {
 //	Serial.println("TimUtilClass::init()");
@@ -44,8 +58,9 @@ String TimUtilClass::getDate() {
 void TimUtilClass::update() {
 	time(&now);                       // read the current time
 	localtime_r(&now, &tm);           // update the structure tm with the current time
-	mTime = String(tm.tm_hour) + ":" + String(tm.tm_min);
-	mDate = String(tm.tm_mday) + "." + String(tm.tm_mon+1) + "." +String(tm.tm_year+1900);
+	// TODO: use strftime
+	this->mDate = String(tm.tm_mday) + "." + String(tm.tm_mon+1) + "." +String(tm.tm_year+1900);
+	this->mTime = String(tm.tm_hour) + ":" + String(tm.tm_min);
 	//Serial.print("UHR: "); Serial.println(mTime);
 	//Serial.print("TAG: "); Serial.println(mDate);
 }
