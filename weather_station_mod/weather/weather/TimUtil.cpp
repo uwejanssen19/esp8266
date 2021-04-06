@@ -3,22 +3,10 @@
 // 
 
 #include "TimUtil.h"
-#include <assert.h>
-time_t now;                         // this is the epoch
-tm tm;                              // the structure tm holds time information in a more convient way
+#include "time.h"
+time_t now;// this is the epoch
+tm timeStruct;     // the structure tm holds time information in a more convient way
 
-//void TimUtilClass::setTime()
-//{
-//	constexpr auto LENGTH = 6;
-//	char buffer[LENGTH];
-//	//String localTime = String(tm.tm_hour) + ":" + String(tm.tm_min);
-//	strftime(buffer, LENGTH, "%H:%M", &tm);
-//}
-
-//void TimUtilClass::setDate(const String date)
-//{
-//	mDate = date;
-//}
 
 void TimUtilClass::init() {
 //	Serial.println("TimUtilClass::init()");
@@ -57,17 +45,19 @@ String TimUtilClass::getDate() {
 
 void TimUtilClass::update() {
 	time(&now);                       // read the current time
-	localtime_r(&now, &tm);           // update the structure tm with the current time
-	// TODO: use strftime
-	this->mDate = String(tm.tm_mday) + "." + String(tm.tm_mon+1) + "." +String(tm.tm_year+1900);
-	this->mTime = String(tm.tm_hour) + ":" + String(tm.tm_min);
+	localtime_r(&now, &timeStruct);           // update the structure tm with the current time
+	char tbuffer[6];
+	char dbuffer[9];
+	strftime(tbuffer, sizeof(tbuffer), "%X", &timeStruct);
+	strftime(dbuffer, sizeof(dbuffer), "%d.%m.%Y", &timeStruct);
+	this->mDate = String(dbuffer);
+	this->mTime = String(tbuffer);
 	//Serial.print("UHR: "); Serial.println(mTime);
 	//Serial.print("TAG: "); Serial.println(mDate);
 }
 
 
 TimUtilClass::TimUtilClass() {
-//		Serial.println("IN CTOR TimUtilClass::TimUtilClass()");
 	this->init();
 }
 

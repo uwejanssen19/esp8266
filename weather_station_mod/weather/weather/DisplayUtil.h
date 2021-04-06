@@ -29,24 +29,25 @@
 
 constexpr auto UPPER_LEFT_CORNER = 10;
 constexpr auto  X_LINE_1 = UPPER_LEFT_CORNER;
-constexpr auto  Y_LINE_1 = 21;
+constexpr auto  Y_LINE_1 = 31;
 constexpr auto  X_VERSION = 120;
 constexpr auto  X_IP = 360;
 constexpr auto  X_DATE = 700;
 
-constexpr auto  HLINE1_LEN = 720;
+constexpr auto  HLINE_LEN = 780;
+constexpr auto  HLINE1_LEN = HLINE_LEN;
 constexpr auto  HLINE1_X = 10;
-constexpr auto  HLINE1_Y = 30;
+constexpr auto  HLINE1_Y = 40;
 
-constexpr auto  RECT1_X = 10;
-constexpr auto  RECT1_Y = 30;
-constexpr auto  RECT1_WIDTH = 360;
-constexpr auto  RECT1_HEIGHT = 125;
+//constexpr auto  RECT1_X = 10;
+//constexpr auto  RECT1_Y = 30;
+//constexpr auto  RECT1_WIDTH = 360;
+//constexpr auto  RECT1_HEIGHT = 125;
 
 constexpr auto  LEFTMOST_X = 2;
-constexpr auto  TEMP1_ICON_X = 2;
+constexpr auto  TEMP1_ICON_X = LEFTMOST_X;
 constexpr auto  TEMP1_ICON_MARGIN_TOP = 22;
-constexpr auto  TEMP1_ICON_Y = (RECT1_Y + TEMP1_ICON_MARGIN_TOP);
+constexpr auto  TEMP1_ICON_Y = (30 + TEMP1_ICON_MARGIN_TOP);
 
 constexpr auto  TEMP_Y = 75; // Y for temperatures
 constexpr auto  TEMP1_X = 70;
@@ -60,6 +61,7 @@ constexpr auto  TEMP3_Y = TEMP_Y;
 
 constexpr auto  HUM_X = TEMP1_X;
 constexpr auto  HUM_Y = 95;
+constexpr auto  RAIN_ICON_Y = HUM_Y + 1;
 constexpr auto  RAIN_Y = 126;
 constexpr auto  PRESS_ICON_X = 15;
 constexpr auto  PRESS_ICON_Y = 141;
@@ -67,7 +69,7 @@ constexpr auto  PRESS_X = HUM_X;
 constexpr auto  PRESS_Y = 163;
 constexpr auto HLINE_DAILY_BEGIN_X = 0;
 constexpr auto HLINE_DAILY_BEGIN_Y = 175+20;
-constexpr auto HLINE_DAILY_WIDTH = 720;
+constexpr auto HLINE_DAILY_WIDTH = HLINE_LEN;
 constexpr auto DAILY_X = 30;
 constexpr auto DAILY_Y = 225;
 constexpr auto HLINE_DAILY_END_X = HLINE_DAILY_BEGIN_X;
@@ -91,7 +93,7 @@ constexpr auto ASTRO_EV_Y = 304;
 
 constexpr auto HLINE_SUNSECTION_X = 0;
 constexpr auto HLINE_SUNSECTION_Y = 320;
-constexpr auto HLINE_SUNSECTION_WIDTH = 720;
+constexpr auto HLINE_SUNSECTION_WIDTH = HLINE_LEN;
 constexpr auto SUN_EVT_TIME_X = 60;
 constexpr auto SUN_EVT_TIME_Y = 368;
 constexpr auto AZIMUT_X = 300;
@@ -101,7 +103,7 @@ constexpr auto ELEV_Y = 388;
 constexpr auto CULM_MAX_X = 60;
 constexpr auto CULM_MAX_Y = 418;
 
-constexpr auto VERSION = "1.06";
+constexpr auto VERSION = "v1.07";
 
 class DisplayUtil
 {

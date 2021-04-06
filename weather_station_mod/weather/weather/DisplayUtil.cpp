@@ -266,7 +266,7 @@ void DisplayUtil::displayData(TimUtilClass timUtil, UnitStorageClass unitStorage
             display.setCursor(X_VERSION, Y_LINE_1); display.print(VERSION);
             display.setCursor(X_IP, Y_LINE_1); display.print(unitStorage.localIP);
             display.setCursor(X_DATE, Y_LINE_1); display.println(timUtil.getDate());
-            drawDashedHLine(X_LINE_1, 30, HLINE1_LEN, GxEPD_BLACK);
+            drawDashedHLine(X_LINE_1, HLINE1_Y, HLINE1_LEN, GxEPD_BLACK);
 
             display.setFont(&FreeMonoBold12pt7b);
             //dashedRect(RECT1_X, RECT1_Y, RECT1_WIDTH, RECT1_HEIGHT, GxEPD_BLACK);
@@ -277,7 +277,7 @@ void DisplayUtil::displayData(TimUtilClass timUtil, UnitStorageClass unitStorage
 
 
             display.setCursor(HUM_X, HUM_Y); display.print(unitStorage.gHum2); display.println("%");
-            display_icon(LEFTMOST_X, HUM_Y + 4, F("prob_rain"));
+            display_icon(LEFTMOST_X, RAIN_ICON_Y, F("prob_rain"));
             display.setCursor(TEMP1_X, RAIN_Y); display.print(unitStorage.gRainProb); display.println(F(" Liter/qm"));
             display_icon(PRESS_ICON_X, PRESS_ICON_Y, F("barometer"));
             display.setCursor(PRESS_X, PRESS_Y); display.print(unitStorage.gPress2); display.println("hPa");

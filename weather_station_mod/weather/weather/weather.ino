@@ -56,9 +56,10 @@ Adafruit_MQTT_Client mqtt(&wclient, AIO_SERVER, AIO_SERVERPORT,"","");
 
 /****************************** Feeds ***************************************/
 
-// Setup a feed called 'tempX' for subscribing to changes on the tempX
 #define TEMP_TOPIC(UNIT) "UweSolar" #UNIT "/bme/temp"
 #define CREATE_TEMP_SUBSCRIPTION( UNIT) Adafruit_MQTT_Subscribe temp##UNIT = Adafruit_MQTT_Subscribe(&mqtt, TEMP_TOPIC(UNIT), MY_QOS);
+
+// Setup a consumer for subscribing to changes on the tempX topic, e.g. Temp1
 
 CREATE_TEMP_SUBSCRIPTION(1)
 CREATE_TEMP_SUBSCRIPTION(2)
@@ -78,9 +79,11 @@ Adafruit_MQTT_Subscribe astrotimestamp = Adafruit_MQTT_Subscribe(&mqtt, "astroti
 Adafruit_MQTT_Subscribe sunculm = Adafruit_MQTT_Subscribe(&mqtt, "sunculm", MY_QOS);
 Adafruit_MQTT_Subscribe astroevent = Adafruit_MQTT_Subscribe(&mqtt, "astroevent", MY_QOS);
 
-
+// all the topic values are stored here
 UnitStorageClass unitStorage;
+// gets NTP time and date and stores it
 TimUtilClass timUtil;
+// manages e-paper display
 DisplayUtil displayUtil;
 
 void setup(void) {
@@ -126,8 +129,6 @@ void setup(void) {
   mqtt.subscribe(&sunculm);
   mqtt.subscribe(&astroevent);
 
-
-//  timUtil.setTimeClient(timeClient);
   timUtil.init();
   displayUtil.init();
 
