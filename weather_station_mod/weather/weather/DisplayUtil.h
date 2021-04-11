@@ -23,7 +23,7 @@
 #include <Fonts/FreeMonoBold9pt7b.h>
 #include <Fonts/FreeMonoBold12pt7b.h>
 #include <Fonts/FreeMonoBold18pt7b.h>
-//#include <Fonts/FreeMonoBold24pt7b.h>
+#include <Fonts/FreeMonoBold24pt7b.h>
 
 // display const 
 
@@ -113,6 +113,8 @@ class DisplayUtil
  public:
 	void init();
 	void displayData(TimUtilClass, UnitStorageClass);
+	void displayStatusMsg(String msg);
+	void displayMsg(String msg);
 	void display_icon(int, int, String);
 	void drawDashedHLine(int16_t, int16_t, int16_t, uint16_t);
 	void writeDashedLine(int16_t, int16_t, int16_t, int16_t, uint16_t);

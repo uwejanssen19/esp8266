@@ -4,8 +4,13 @@
 
 #include "TimUtil.h"
 #include "time.h"
+#include "UnitStorage.h"
+#include "DisplayUtil.h"
 time_t now;// this is the epoch
 tm timeStruct;     // the structure tm holds time information in a more convient way
+
+extern UnitStorageClass unitStorage;
+extern DisplayUtil displayUtil;
 
 
 void TimUtilClass::init() {
@@ -59,5 +64,32 @@ void TimUtilClass::update() {
 
 TimUtilClass::TimUtilClass() {
 	this->init();
+}
+
+int TimUtilClass::getHour()
+{
+	return 0;
+}
+
+void TimUtilClass::setHourOfLastMessage()
+{
+	lastMessage = timeStruct.tm_min;
+}
+boolean TimUtilClass::lastMsgTooLate() {
+	time(&now);                       // read the current time
+	localtime_r(&now, &timeStruct);           // update the structure tm with the current time
+#if defined(VM_DEBUG)
+	Serial.print("last time value = "); Serial.println(this->lastMessage);
+	Serial.print("currrent value = "); Serial.println(timeStruct.tm_min);
+	Serial.print("firstMsgReceived  = "); Serial.println(unitStorage.firstMsgReceived);
+#endif
+	if (unitStorage.firstMsgReceived) {
+		String tmpMsg = "waiting for next measurement since " + String(timeStruct.tm_min - this->lastMessage) + " min";
+		Serial.println(tmpMsg);
+		displayUtil.displayStatusMsg(tmpMsg);
+	}
+	boolean retVal = unitStorage.firstMsgReceived && (timeStruct.tm_min > this->lastMessage + 7);
+	//return (timeStruct.tm_hour > this->hourOflastMessage + 1); // last msg more than 2 hours ago
+	return retVal; // no msg at least 7 minutes
 }
 

@@ -16,6 +16,7 @@ class TimUtilClass
  private:
 	 String mTime = "no time";
 	 String mDate = "no date";
+	 int lastMessage = 0;
  protected:
 
  public:
@@ -24,6 +25,9 @@ class TimUtilClass
 	String getDate();
 	void update();
 	TimUtilClass();
+	int getHour();
+	void setHourOfLastMessage();
+	boolean lastMsgTooLate();
 };
 
 extern TimUtilClass TimUtil;

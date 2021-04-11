@@ -43,7 +43,7 @@ constexpr auto MY_QOS = MQTT_QOS_0;
 //#define VALUE_OUT(NAME) Serial.println(String(#NAME " = ") + String(x))
 #define VALUE_OUT(NAME)
 // define callback function
-#define ADD_ON_FUNCTION(NAME) unitStorage.gTime##NAME = timUtil.getTime();
+#define ADD_ON_FUNCTION(NAME) unitStorage.gTime##NAME = timUtil.getTime();timUtil.setHourOfLastMessage();unitStorage.firstMsgReceived = true;
 #define CALLBACK(NAME, ADD_ON) void CALLBACK_REF(NAME) (char* x, uint16_t dummy) {VALUE_OUT(NAME);unitStorage.g ## NAME = x;ADD_ON}
 
 const char* ssid = SSID;
@@ -89,9 +89,9 @@ DisplayUtil displayUtil;
 void setup(void) {
   Serial.begin(115200);
 
-  Serial.println(F("wifi BEGIN"));
+  //Serial.println(F("wifi BEGIN"));
   initialise_wifi();
-  Serial.println(F("init wifi END "));
+  //Serial.println(F("init wifi END "));
   
   temp1.setCallback(CALLBACK_REF(Temp1));
   temp2.setCallback(CALLBACK_REF(Temp2));
@@ -147,18 +147,25 @@ void loop() {
  //   Serial.println(F("BEFORE processPackets"));
     mqtt.processPackets(10000);
  //   Serial.println(F("AFTER  processPackets"));
-
+    displayUtil.init();
     displayUtil.displayData(timUtil, unitStorage);
+    // reboot if there are no messages more than 2 hours ago 
+    if (timUtil.lastMsgTooLate()) {
+        Serial.println("too late condition met!");
+        displayUtil.init();
+        displayUtil.displayMsg("waited > 7 min for a message => RESTART");
+        delay(10000);
+        ESP.restart();
+    }
     delay(20000);
 }
-
 
 
 
 // NETWORK STUFF
 
 void initialise_wifi() {
-    Serial.println(F("init Wifi"));
+    //Serial.println(F("init Wifi"));
     WiFi.hostname(F("DisplayUnit"));
     // connect to WLAN
     WiFi.mode(WIFI_STA);
@@ -173,9 +180,9 @@ void initialise_wifi() {
         delay(5000);
         Serial.print(".");
     }
-    Serial.print("Wifi Connected to ");
+    Serial.println("Wifi Connected to ");
     Serial.println(ssid);
-    Serial.println("IP Address: ");
+    Serial.print("IP Address: ");
     unitStorage.localIP = WiFi.localIP().toString();
     Serial.println(unitStorage.localIP);
 
@@ -217,7 +224,7 @@ void MQTT_connect() {
         delay(10000);  // wait 10 seconds
         retries--;
         if (retries == 0) {
-            Serial.println("Last attempt MQTT connect FAILED -> enter FOREVER loop");
+            Serial.println("MQTT connect FAILED -> restart ESP");
             // restart
             ESP.restart();
         }

@@ -4,7 +4,7 @@
 #define NEED_DISPLAY_DEF
 #include "DisplayUtil.h"
 
-
+extern UnitStorageClass unitStorage;
 // Define each of the *icons for display
 
 const unsigned char moon_0_8[] PROGMEM = {
@@ -247,63 +247,82 @@ void DisplayUtil::init()
 void DisplayUtil::displayData(TimUtilClass timUtil, UnitStorageClass unitStorage)
 {
 
-        //  String currentIcon = "weather.darksky.home.currently.icon";
-        String dailySummary = F(" Lokal veraenderliches Wetter, vereinzelt Schauer oder Sonnenschein");
-        //  double windSpeed = 25.09;
-        display.setRotation(2);
+    //  String currentIcon = "weather.darksky.home.currently.icon";
+    String dailySummary = unitStorage.gDaily;
+    //  double windSpeed = 25.09;
+    display.setRotation(2);
+    display.setFont(&FreeMonoBold18pt7b);
+    display.setTextColor(GxEPD_BLACK);
+    display.setFullWindow();
+    display.firstPage();
+
+
+    do
+    {
+        display.fillScreen(GxEPD_WHITE);
+        display.setFont(&FreeMonoBold9pt7b);
+
+        display.setCursor(X_LINE_1, Y_LINE_1); display.println(timUtil.getTime());
+        display.setCursor(X_VERSION, Y_LINE_1); display.print(VERSION);
+        display.setCursor(X_IP, Y_LINE_1); display.print(unitStorage.localIP);
+        display.setCursor(X_DATE, Y_LINE_1); display.println(timUtil.getDate());
+        drawDashedHLine(X_LINE_1, HLINE1_Y, HLINE1_LEN, GxEPD_BLACK);
+
+        display.setFont(&FreeMonoBold12pt7b);
+        //dashedRect(RECT1_X, RECT1_Y, RECT1_WIDTH, RECT1_HEIGHT, GxEPD_BLACK);
+        display_icon(LEFTMOST_X, TEMP1_ICON_Y, F("temperature"));
+        display.setCursor(TEMP1_X, TEMP1_Y); display.println(String(unitStorage.gTemp1) + F(" C (") + String(unitStorage.gTimeTemp1) + F(")"));
+        display.setCursor(TEMP2_X, TEMP1_Y); display.println(String(unitStorage.gTemp2) + F(" C (") + String(unitStorage.gTimeTemp2) + F(")"));
+        display.setCursor(TEMP3_X, TEMP1_Y); display.println(String(unitStorage.gTemp3) + F(" C (") + String(unitStorage.gTimeTemp3) + F(")"));
+
+
+        display.setCursor(HUM_X, HUM_Y); display.print(unitStorage.gHum2); display.println("%");
+        display_icon(LEFTMOST_X, RAIN_ICON_Y, F("prob_rain"));
+        display.setCursor(TEMP1_X, RAIN_Y); display.print(unitStorage.gRainProb); display.println(F(" Liter/qm"));
+        display_icon(PRESS_ICON_X, PRESS_ICON_Y, F("barometer"));
+        display.setCursor(PRESS_X, PRESS_Y); display.print(unitStorage.gPress2); display.println("hPa");
+
+        display.setFont(&FreeMonoBold9pt7b);
+        drawDashedHLine(HLINE_DAILY_BEGIN_X, HLINE_DAILY_BEGIN_Y, HLINE_DAILY_WIDTH, GxEPD_BLACK);
+        display.setCursor(DAILY_X, DAILY_Y); display.println(dailySummary);
+        drawDashedHLine(HLINE_DAILY_END_X, HLINE_DAILY_END_Y, HLINE_DAILY_WIDTH, GxEPD_BLACK);
+        display.setFont(&FreeMonoBold9pt7b);
+        display_icon(RISESET_ICON_X, RISESET_ICON_Y, "sunrise_sunset");
+        display.setCursor(SUNRISE_X, SUNRISE_Y); display.println(unitStorage.gSunRise);
+        display.setCursor(SUNSET_X, SUNSET_Y); display.println(unitStorage.gSunSet);
         display.setFont(&FreeMonoBold18pt7b);
-        display.setTextColor(GxEPD_BLACK);
-        display.setFullWindow();
-        display.firstPage();
+        display_icon(MOONPHASE_ICON_X, MOONPHASE_ICON_Y, "moon_" + String(unitStorage.gMoonPhase));
+        display.setFont(&FreeMonoBold9pt7b);
+        display.setCursor(MOONRISE_X, MOONRISE_Y); display.println(unitStorage.gMoonRise);
+        display.setCursor(LAST_EVT_X, LAST_EVT_Y); display.println("Letzter Eintrag");
+        display.setCursor(MOONSET_X, MOONSET_Y); display.println(unitStorage.gMoonSet);
+        display.setCursor(ASTRO_EV_X, ASTRO_EV_Y); display.println(unitStorage.gLastEventTime + ": " + unitStorage.gAstroEvent);
 
+        drawDashedHLine(HLINE_SUNSECTION_X, HLINE_SUNSECTION_Y, HLINE_SUNSECTION_WIDTH, GxEPD_BLACK);
+        display.setCursor(SUN_EVT_TIME_X, SUN_EVT_TIME_Y); display.println("Sonnenstand um: " + String(unitStorage.gAstroTime));
+        display.setCursor(AZIMUT_X, AZIMUT_Y); display.println("Azimut: " + String(unitStorage.gAzimut));
+        display.setCursor(ELEV_X, ELEV_Y); display.println("Hoehe: " + String(unitStorage.gElevation));
+        display.setCursor(CULM_MAX_X, CULM_MAX_Y); display.println("Hoechststand bisher: " + String(unitStorage.gSunCulm));
+    } while (display.nextPage());
 
-        do
-        {
-            display.fillScreen(GxEPD_WHITE);
-            display.setFont(&FreeMonoBold9pt7b);
+}
+void DisplayUtil::displayStatusMsg(String msg) {
+    unitStorage.gDaily = msg;
+}
+void DisplayUtil::displayMsg(String msg) {
+    //Serial.print("displaying msg "); Serial.println(msg);
 
-            display.setCursor(X_LINE_1, Y_LINE_1); display.println(timUtil.getTime());
-            display.setCursor(X_VERSION, Y_LINE_1); display.print(VERSION);
-            display.setCursor(X_IP, Y_LINE_1); display.print(unitStorage.localIP);
-            display.setCursor(X_DATE, Y_LINE_1); display.println(timUtil.getDate());
-            drawDashedHLine(X_LINE_1, HLINE1_Y, HLINE1_LEN, GxEPD_BLACK);
+    display.setRotation(2);
+    display.setFont(&FreeMonoBold24pt7b);
+    display.setTextColor(GxEPD_BLACK);
+    display.setFullWindow();
+    display.firstPage();
 
-            display.setFont(&FreeMonoBold12pt7b);
-            //dashedRect(RECT1_X, RECT1_Y, RECT1_WIDTH, RECT1_HEIGHT, GxEPD_BLACK);
-            display_icon(LEFTMOST_X, TEMP1_ICON_Y, F("temperature"));
-            display.setCursor(TEMP1_X, TEMP1_Y); display.println(String(unitStorage.gTemp1) + F(" C (") + String(unitStorage.gTimeTemp1) + F(")"));
-            display.setCursor(TEMP2_X, TEMP1_Y); display.println(String(unitStorage.gTemp2) + F(" C (") + String(unitStorage.gTimeTemp2) + F(")"));
-            display.setCursor(TEMP3_X, TEMP1_Y); display.println(String(unitStorage.gTemp3) + F(" C (") + String(unitStorage.gTimeTemp3) + F(")"));
-
-
-            display.setCursor(HUM_X, HUM_Y); display.print(unitStorage.gHum2); display.println("%");
-            display_icon(LEFTMOST_X, RAIN_ICON_Y, F("prob_rain"));
-            display.setCursor(TEMP1_X, RAIN_Y); display.print(unitStorage.gRainProb); display.println(F(" Liter/qm"));
-            display_icon(PRESS_ICON_X, PRESS_ICON_Y, F("barometer"));
-            display.setCursor(PRESS_X, PRESS_Y); display.print(unitStorage.gPress2); display.println("hPa");
-
-            display.setFont(&FreeMonoBold9pt7b);
-            drawDashedHLine(HLINE_DAILY_BEGIN_X, HLINE_DAILY_BEGIN_Y, HLINE_DAILY_WIDTH, GxEPD_BLACK);
-            display.setCursor(DAILY_X, DAILY_Y); display.println(dailySummary);
-            drawDashedHLine(HLINE_DAILY_END_X, HLINE_DAILY_END_Y, HLINE_DAILY_WIDTH, GxEPD_BLACK);
-            display.setFont(&FreeMonoBold9pt7b);
-            display_icon(RISESET_ICON_X, RISESET_ICON_Y, "sunrise_sunset");
-            display.setCursor(SUNRISE_X, SUNRISE_Y); display.println(unitStorage.gSunRise);
-            display.setCursor(SUNSET_X, SUNSET_Y); display.println(unitStorage.gSunSet);
-            display.setFont(&FreeMonoBold18pt7b);
-            display_icon(MOONPHASE_ICON_X, MOONPHASE_ICON_Y, "moon_" + String(unitStorage.gMoonPhase));
-            display.setFont(&FreeMonoBold9pt7b);
-            display.setCursor(MOONRISE_X, MOONRISE_Y); display.println(unitStorage.gMoonRise);
-            display.setCursor(LAST_EVT_X, LAST_EVT_Y); display.println("Letzter Eintrag");
-            display.setCursor(MOONSET_X, MOONSET_Y); display.println(unitStorage.gMoonSet);
-            display.setCursor(ASTRO_EV_X, ASTRO_EV_Y); display.println(unitStorage.gLastEventTime + ": " + unitStorage.gAstroEvent);
-
-            drawDashedHLine(HLINE_SUNSECTION_X, HLINE_SUNSECTION_Y, HLINE_SUNSECTION_WIDTH, GxEPD_BLACK);
-            display.setCursor(SUN_EVT_TIME_X, SUN_EVT_TIME_Y); display.println("Sonnenstand um: " + String(unitStorage.gAstroTime));
-            display.setCursor(AZIMUT_X, AZIMUT_Y); display.println("Azimut: " + String(unitStorage.gAzimut));
-            display.setCursor(ELEV_X, ELEV_Y); display.println("Hoehe: " + String(unitStorage.gElevation));
-            display.setCursor(CULM_MAX_X, CULM_MAX_Y); display.println("Hoechststand bisher: " + String(unitStorage.gSunCulm));
-        } while (display.nextPage());
+    do
+    {
+        display.fillScreen(GxEPD_WHITE);
+        display.setCursor(DAILY_X, DAILY_Y); display.println(msg);
+    } while (display.nextPage());
 
 }
 void DisplayUtil::drawDashedHLine(int16_t x, int16_t y, int16_t w, uint16_t color) {

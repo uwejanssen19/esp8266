@@ -37,6 +37,8 @@ class UnitStorageClass
 	String gTimeTemp1 = "HH:MM";
 	String gTimeTemp2 = "HH:MM";
 	String gTimeTemp3 = "HH:MM";
+	boolean firstMsgReceived = false;
+	String gDaily = "";
 };
 
 extern UnitStorageClass UnitStorage;
