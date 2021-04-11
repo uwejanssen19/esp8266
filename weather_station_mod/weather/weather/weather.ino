@@ -134,6 +134,44 @@ void setup(void) {
 
  }
 
+void unsubscribe() {
+    // Setup MQTT subscriptions
+    temp1.removeCallback();
+    temp2.removeCallback();
+    temp3.removeCallback();
+    press2.removeCallback();
+    hum2.removeCallback();
+    rainProb.removeCallback();
+    sunRise.removeCallback();
+    sunSet.removeCallback();
+    moonRise.removeCallback();
+    moonSet.removeCallback();
+    moonPhase.removeCallback();
+    azimuth.removeCallback();
+    elevation.removeCallback();
+    astrotimestamp.removeCallback();
+    sunculm.removeCallback();
+    astroevent.removeCallback();
+
+
+    mqtt.unsubscribe(&temp1);
+    mqtt.unsubscribe(&temp2);
+    mqtt.unsubscribe(&temp3);
+    mqtt.unsubscribe(&press2);
+    mqtt.unsubscribe(&hum2);
+    mqtt.unsubscribe(&rainProb);
+    mqtt.unsubscribe(&sunRise);
+    mqtt.unsubscribe(&sunSet);
+    mqtt.unsubscribe(&moonRise);
+    mqtt.unsubscribe(&moonSet);
+    mqtt.unsubscribe(&moonPhase);
+    mqtt.unsubscribe(&azimuth);
+    mqtt.unsubscribe(&elevation);
+    mqtt.unsubscribe(&astrotimestamp);
+    mqtt.unsubscribe(&sunculm);
+    mqtt.unsubscribe(&astroevent);
+}
+
 void loop() {
     // update NTP 
     timUtil.update();
@@ -154,7 +192,9 @@ void loop() {
         Serial.println("too late condition met!");
         displayUtil.init();
         displayUtil.displayMsg("waited > 7 min for a message => RESTART");
-        delay(10000);
+        delay(10000); // msg readable 10 secs
+          // remove MQTT subscriptions
+        unsubscribe();
         ESP.restart();
     }
     delay(20000);
@@ -220,11 +260,13 @@ void MQTT_connect() {
     while ((ret = mqtt.connect()) != 0) { // connect will return 0 for connected
         Serial.println(mqtt.connectErrorString(ret));
         Serial.println("Retrying MQTT conn in 10 seconds...");
+        unsubscribe();
         mqtt.disconnect();
         delay(10000);  // wait 10 seconds
         retries--;
         if (retries == 0) {
             Serial.println("MQTT connect FAILED -> restart ESP");
+            unsubscribe();
             // restart
             ESP.restart();
         }
@@ -248,8 +290,3 @@ CALLBACK(Elevation, {})
 CALLBACK(AstroTime, {})
 CALLBACK(SunCulm, {})
 CALLBACK(AstroEvent, { unitStorage.gLastEventTime = timUtil.getTime(); })
-
-//void astroeventcallback(char* x, uint16_t dummy) {
-//    unitStorage.gAstroEvent = x;
-//    unitStorage.gLastEventTime = timUtil.getTime();
-//}
