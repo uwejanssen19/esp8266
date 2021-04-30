@@ -26,10 +26,7 @@
 //#include <JsonParser.h>
 //#include <ArduinoJson.h>
 
-#include "TimUtil.h"
-
-//#include "cred.h" // do not maintain this file in source control
-
+#include "TimUtilCheck.h"
 
 
 // MQTT const
@@ -84,7 +81,7 @@ Adafruit_MQTT_Subscribe astroevent = Adafruit_MQTT_Subscribe(&mqtt, "astroevent"
 // all the topic values are stored here
 UnitStorageClass unitStorage;
 // gets NTP time and date and stores it
-TimUtilClass timUtil;
+TimUtilCheck timUtil;
 // manages e-paper display
 DisplayUtil displayUtil;
 
@@ -189,8 +186,10 @@ void loop() {
  //   Serial.println(F("AFTER  processPackets"));
     displayUtil.init();
     displayUtil.displayData(timUtil, unitStorage);
+    String msg;
     // reboot if there are no messages more than 2 hours ago 
-    if (timUtil.lastMsgTooLate()) {
+    if (timUtil.lastMsgTooLate(msg)) {
+
         Serial.println("too late condition met!");
         displayUtil.init();
         displayUtil.displayMsg("waited > MAX_WAIT min for a message => RESTART");
@@ -272,7 +271,7 @@ void MQTT_connect() {
             Serial.println(statusMsg);
             displayUtil.displayMsg(statusMsg);
             unsubscribe();
-            unitStorage.firstMsgReceived = false;
+            timUtil.setFirstMessageReceived(false);
             // restart
             ESP.restart();
         }

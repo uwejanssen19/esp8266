@@ -27,24 +27,30 @@
     <ClInclude Include="GxEPD2_display_selection_new_style.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TimUtil.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="DisplayUtil.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="UnitStorage.h">
+    <ClInclude Include="TimUtilCheck.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\SolarUnitLib\src\TimUtil.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\SolarUnitLib\src\UnitStorage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="TimUtil.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="DisplayUtil.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="UnitStorage.cpp">
+    <ClCompile Include="TimUtilCheck.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\SolarUnitLib\src\TimUtil.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\SolarUnitLib\src\UnitStorage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -244,7 +244,7 @@ void DisplayUtil::init()
 {
    display.init(115200);
 }
-void DisplayUtil::displayData(TimUtilClass timUtil, UnitStorageClass unitStorage)
+void DisplayUtil::displayData(TimUtilCheck timUtil, UnitStorageClass unitStorage)
 {
 
     //  String currentIcon = "weather.darksky.home.currently.icon";

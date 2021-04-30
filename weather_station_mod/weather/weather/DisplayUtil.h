@@ -9,7 +9,7 @@
 	#include "WProgram.h"
 #endif
 
-#include "TimUtil.h"
+#include "TimUtilCheck.h"
 #include "UnitStorage.h"
 #include <gfxfont.h>
 #include <Adafruit_GFX.h>
@@ -112,7 +112,7 @@ class DisplayUtil
 
  public:
 	void init();
-	void displayData(TimUtilClass, UnitStorageClass);
+	void displayData(TimUtilCheck, UnitStorageClass);
 	void displayStatusMsg(String msg);
 	void displayMsg(String msg);
 	void display_icon(int, int, String);
