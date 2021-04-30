@@ -52,7 +52,7 @@ void TimUtilClass::update() {
 	time(&now);                       // read the current time
 	localtime_r(&now, &timeStruct);           // update the structure tm with the current time
 	char tbuffer[6];
-	char dbuffer[9];
+	char dbuffer[11];
 	strftime(tbuffer, sizeof(tbuffer), "%X", &timeStruct);
 	strftime(dbuffer, sizeof(dbuffer), "%d.%m.%Y", &timeStruct);
 	this->mDate = String(dbuffer);
@@ -71,31 +71,35 @@ int TimUtilClass::getHour()
 	return 0;
 }
 
-void TimUtilClass::setHourOfLastMessage()
+void TimUtilClass::setTimeOfLastMsg()
 {
-	lastMessage = timeStruct.tm_min;
+	time(&now);                       // read the current time
+	// update the structure tm with the current time
+	localtime_r(&now, &lastMessage);
+	unitStorage.firstMsgReceived = true;
+
 }
 boolean TimUtilClass::lastMsgTooLate() {
 	time(&now);                       // read the current time
 	localtime_r(&now, &timeStruct);   // update the structure tm with the current time
+	// if current time < lastMessage we have an overflow e.g. current time 01:01  & last message 23:58
+	// thus lastMessage  + MAX_WAIT_FOR_TEMP2  get too big
+	// so add max units (24 hours or 60 minutes, respectively) to current time if (current time < lastMessage) in order to fix overflow
+	int currentHour = timeStruct.tm_hour;
+	if (currentHour < lastMessage.tm_hour) { currentHour += 24; }
 #if defined(VM_DEBUG)
 	Serial.print("last time value = "); Serial.println(this->lastMessage);
-	Serial.print("currrent value = "); Serial.println(timeStruct.tm_min);
+	Serial.print("currrent value = "); Serial.println(currentHour);
 	Serial.print("firstMsgReceived  = "); Serial.println(unitStorage.firstMsgReceived);
 #endif
-	constexpr auto MAX_WAIT_FOR_TEMP2 = 6;
-	if (unitStorage.firstMsgReceived) {
-		String tmpMsg = "awaiting msg since " + String(timeStruct.tm_min - this->lastMessage) + " min";
-		Serial.println(tmpMsg);
-		displayUtil.displayStatusMsg(tmpMsg);
-	}
-	// if current time < lastMessage we have an overflow e.g. current time 17:01  & last message 16:58
-	// thus lastMessage  + MAX_WAIT_FOR_TEMP2  = 64 and current time = 01 (hours not regarded)
-	// so add 60 to current time if (current time < lastMessage) in order to fix overflow
-	int currentMinutes = timeStruct.tm_min;
-	if (currentMinutes < this->lastMessage) { currentMinutes += 60; }
-	boolean tooMuchGap = (currentMinutes - this->lastMessage) > MAX_WAIT_FOR_TEMP2;
-	boolean retVal = unitStorage.firstMsgReceived && tooMuchGap;
-	return retVal; // no msg at least MAX_WAIT_FOR_TEMP2 minutes
+	constexpr auto MAX_WAIT_FOR_ANY_MQTT = 2;
+
+	int diff = (currentHour - lastMessage.tm_hour);
+	String tmpMsg = "last msg came at " + String(lastMessage.tm_hour) + ":" + String(lastMessage.tm_min) + ", data_received = " + unitStorage.firstMsgReceived;
+	Serial.println(tmpMsg);
+	displayUtil.displayStatusMsg(tmpMsg);
+	// value only relevant if at least 1 mqtt topic has been received
+	boolean retVal = (diff > MAX_WAIT_FOR_ANY_MQTT) && unitStorage.firstMsgReceived;
+	return retVal; // true if no msg at least MAX_WAIT_FOR_ANY_MQTT units
 }
 

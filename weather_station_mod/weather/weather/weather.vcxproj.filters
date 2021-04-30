@@ -24,9 +24,6 @@
     <ClInclude Include="__vm\.weather.vsarduino.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="cred.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="GxEPD2_display_selection_new_style.h">
       <Filter>Header Files</Filter>
     </ClInclude>

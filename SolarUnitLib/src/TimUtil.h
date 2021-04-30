@@ -11,26 +11,24 @@
 // https://github.com/nayarsystems/posix_tz_db/blob/master/zones.csv
 constexpr auto MY_TZ = "CET-1CEST,M3.5.0/02,M10.5.0/03" ;
 
-class TimUtilClass
+class TimUtilBase
 {
  private:
 	 String mTime = "no time";
 	 String mDate = "no date";
-	 tm lastMessage;
  protected:
-
+	 time_t now;// this is the epoch
+	 tm timeStruct;     // the structure tm holds time information in a more convient way
  public:
 	void init();
 	String getTime();
 	String getDate();
 	void update();
-	TimUtilClass();
+	TimUtilBase();
 	int getHour();
-	void setTimeOfLastMsg();
-	boolean lastMsgTooLate();
 };
 
-extern TimUtilClass TimUtil;
+extern TimUtilBase TimUtil;
 
 #endif
 

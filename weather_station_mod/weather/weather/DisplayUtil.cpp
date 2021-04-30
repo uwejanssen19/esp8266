@@ -264,7 +264,7 @@ void DisplayUtil::displayData(TimUtilClass timUtil, UnitStorageClass unitStorage
 
         display.setCursor(X_LINE_1, Y_LINE_1); display.println(timUtil.getTime());
         display.setCursor(X_VERSION, Y_LINE_1); display.print(VERSION);
-        display.setCursor(X_IP, Y_LINE_1); display.print(unitStorage.localIP);
+        display.setCursor(X_IP, Y_LINE_1); display.print(String(PRIVATE_SSID)+"/"+unitStorage.localIP);
         display.setCursor(X_DATE, Y_LINE_1); display.println(timUtil.getDate());
         drawDashedHLine(X_LINE_1, HLINE1_Y, HLINE1_LEN, GxEPD_BLACK);
 
@@ -313,7 +313,7 @@ void DisplayUtil::displayMsg(String msg) {
     //Serial.print("displaying msg "); Serial.println(msg);
 
     display.setRotation(2);
-    display.setFont(&FreeMonoBold24pt7b);
+    display.setFont(&FreeMonoBold18pt7b);
     display.setTextColor(GxEPD_BLACK);
     display.setFullWindow();
     display.firstPage();

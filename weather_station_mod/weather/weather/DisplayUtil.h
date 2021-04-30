@@ -31,8 +31,8 @@ constexpr auto UPPER_LEFT_CORNER = 10;
 constexpr auto  X_LINE_1 = UPPER_LEFT_CORNER;
 constexpr auto  Y_LINE_1 = 31;
 constexpr auto  X_VERSION = 120;
-constexpr auto  X_IP = 360;
-constexpr auto  X_DATE = 700;
+constexpr auto  X_IP = 300;
+constexpr auto  X_DATE = 660;
 
 constexpr auto  HLINE_LEN = 780;
 constexpr auto  HLINE1_LEN = HLINE_LEN;

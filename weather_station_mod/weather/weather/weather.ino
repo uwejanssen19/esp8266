@@ -28,12 +28,12 @@
 
 #include "TimUtil.h"
 
-#include "cred.h" // do not maintain this file in source control
+//#include "cred.h" // do not maintain this file in source control
 
 
 
 // MQTT const
-constexpr auto AIO_SERVER = "192.168.178.23";
+constexpr auto AIO_SERVER = "garden-control.fritz.box";
 constexpr auto AIO_SERVERPORT = 1883;
 constexpr auto MY_QOS = MQTT_QOS_0;
 //constexpr auto AIO_USERNAME    ""
@@ -43,11 +43,13 @@ constexpr auto MY_QOS = MQTT_QOS_0;
 //#define VALUE_OUT(NAME) Serial.println(String(#NAME " = ") + String(x))
 #define VALUE_OUT(NAME)
 // define callback function
-#define ADD_ON_FUNCTION(NAME) unitStorage.gTime##NAME = timUtil.getTime();timUtil.setHourOfLastMessage();unitStorage.firstMsgReceived = true;
-#define CALLBACK(NAME, ADD_ON) void CALLBACK_REF(NAME) (char* x, uint16_t dummy) {VALUE_OUT(NAME);unitStorage.g ## NAME = x;ADD_ON}
+#define UPDATE_LAST_MSG timUtil.setTimeOfLastMsg();
+#define ADD_ON_FUNCTION(NAME) unitStorage.gTime##NAME = timUtil.getTime();
+#define CALLBACK(NAME, ADD_ON) void CALLBACK_REF(NAME) (char* x, uint16_t dummy) {UPDATE_LAST_MSG VALUE_OUT(NAME) unitStorage.g ## NAME = x;ADD_ON}
 
-const char* ssid = SSID;
-const char* wlanPwd = WLAN_KEY;
+
+const char* ssid = PRIVATE_SSID; // defined in proj properties
+const char* wlanPwd = PRIVATE_WLAN_KEY; // defined in proj properties
 
 WiFiClient wclient;
 
@@ -191,7 +193,7 @@ void loop() {
     if (timUtil.lastMsgTooLate()) {
         Serial.println("too late condition met!");
         displayUtil.init();
-        displayUtil.displayMsg("waited > 7 min for a message => RESTART");
+        displayUtil.displayMsg("waited > MAX_WAIT min for a message => RESTART");
         delay(10000); // msg readable 10 secs
           // remove MQTT subscriptions
         unsubscribe();
@@ -220,58 +222,64 @@ void initialise_wifi() {
         delay(5000);
         Serial.print(".");
     }
-    Serial.println("Wifi Connected to ");
-    Serial.println(ssid);
-    Serial.print("IP Address: ");
     unitStorage.localIP = WiFi.localIP().toString();
-    Serial.println(unitStorage.localIP);
-
+    print_wifi_status();
 }
 
-//void print_wifi_status() {
-////   SSID des WiFi Netzwerkes ausgeben:
-//  Serial.print("SSID: ");
-//  Serial.println(ssid);
-//
-//  // WiFi IP Adresse des ESP32 ausgeben:
-//  IPAddress ip = WiFi.localIP();
-//  Serial.print("IP Address: ");
-//  Serial.println(ip);
-//
-//  // WiFi Signalstaerke ausgeben:
-//  long rssi = WiFi.RSSI();
-//  Serial.print("signal strength (RSSI):");
-//  Serial.print(rssi);
-//  Serial.println(" dBm");
-//}
+void print_wifi_status() {
+//   SSID des WiFi Netzwerkes ausgeben:
+  Serial.print("SSID: ");
+  Serial.println(ssid);
+
+  // WiFi IP Adresse des ESP32 ausgeben:
+  IPAddress ip = WiFi.localIP();
+  Serial.print("IP Address: ");
+  Serial.println(ip);
+
+  // WiFi Signalstaerke ausgeben:
+  long rssi = WiFi.RSSI();
+  Serial.print("signal strength (RSSI):");
+  Serial.print(rssi);
+  Serial.println(" dBm");
+}
 // Function to connect and reconnect as necessary to the MQTT server.
 // Should be called in the loop function and it will take care if connecting.
 void MQTT_connect() {
     int8_t ret;
+    String statusMsg;
 
     // Stop if already connected.
     if (mqtt.connected()) {
         return;
     }
 
-    Serial.print("Connecting to MQTT... ");
+    Serial.println("Connecting to MQTT... ");
+    displayUtil.init();
+
 
     uint8_t retries = 3;
     while ((ret = mqtt.connect()) != 0) { // connect will return 0 for connected
         Serial.println(mqtt.connectErrorString(ret));
-        Serial.println("Retrying MQTT conn in 10 seconds...");
+        statusMsg = "Retrying MQTT conn in 10 seconds...";
+        Serial.println(statusMsg);
+        displayUtil.displayMsg(statusMsg);
         unsubscribe();
         mqtt.disconnect();
         delay(10000);  // wait 10 seconds
         retries--;
         if (retries == 0) {
-            Serial.println("MQTT connect FAILED -> restart ESP");
+            statusMsg = "MQTT connect FAILED -> restart ESP";
+            Serial.println(statusMsg);
+            displayUtil.displayMsg(statusMsg);
             unsubscribe();
+            unitStorage.firstMsgReceived = false;
             // restart
             ESP.restart();
         }
     }
-    Serial.println("MQTT Connected!");
+    statusMsg = (unitStorage.localIP + String(": MQTT Connected!")).c_str();
+    Serial.println(statusMsg);
+    displayUtil.displayMsg(statusMsg);
 }
 
 CALLBACK(Temp1, ADD_ON_FUNCTION(Temp1))
