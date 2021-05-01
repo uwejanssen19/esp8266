@@ -32,15 +32,18 @@ boolean TimUtilCheck::lastMsgTooLate(String &msg) {
 	Serial.print("firstMsgReceived  = "); Serial.println(unitStorage.firstMsgReceived);
 #endif
 	constexpr auto MAX_WAIT_FOR_ANY_MQTT = 2;
-
 	int diff = (currentHour - lastMessage.tm_hour);
-	String tmpMsg = "last msg came at " + String(lastMessage.tm_hour) + ":" + String(lastMessage.tm_min) + ", data_received = " + firstMsgReceived;
-	Serial.println(tmpMsg);
-	//displayUtil.displayStatusMsg(tmpMsg);
-	msg = tmpMsg;
+	msg = 
+		firstMsgReceived ?
+		("last topic change at " + String(lastMessage.tm_hour) + ":" + String(lastMessage.tm_min))
+		:
+		"no msg received";
+	Serial.println(msg);
+	// pass over message to caller of this method
 	// value only relevant if at least 1 mqtt topic has been received
 	boolean retVal = (diff > MAX_WAIT_FOR_ANY_MQTT) && firstMsgReceived;
 	return retVal; // true if no msg at least MAX_WAIT_FOR_ANY_MQTT units
 }
 
+//CTOR
 TimUtilCheck::TimUtilCheck() : TimUtilBase() {}

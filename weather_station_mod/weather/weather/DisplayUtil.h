@@ -103,7 +103,7 @@ constexpr auto ELEV_Y = 388;
 constexpr auto CULM_MAX_X = 60;
 constexpr auto CULM_MAX_Y = 418;
 
-constexpr auto VERSION = "v1.07";
+constexpr auto VERSION = "v1.08";
 
 class DisplayUtil
 {

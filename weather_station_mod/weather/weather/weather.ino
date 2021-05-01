@@ -91,48 +91,50 @@ void setup(void) {
   //Serial.println(F("wifi BEGIN"));
   initialise_wifi();
   //Serial.println(F("init wifi END "));
-  
-  temp1.setCallback(CALLBACK_REF(Temp1));
-  temp2.setCallback(CALLBACK_REF(Temp2));
-  temp3.setCallback(CALLBACK_REF(Temp3));
-  press2.setCallback(CALLBACK_REF(Press2));
-  hum2.setCallback(CALLBACK_REF(Hum2));
-  rainProb.setCallback(CALLBACK_REF(RainProb));
-  sunRise.setCallback(CALLBACK_REF(SunRise));
-  sunSet.setCallback(CALLBACK_REF(SunSet));
-  moonRise.setCallback(CALLBACK_REF(MoonRise));
-  moonSet.setCallback(CALLBACK_REF(MoonSet));
-  moonPhase.setCallback(CALLBACK_REF(MoonPhase));
-  azimuth.setCallback(CALLBACK_REF(Azimut));
-  elevation.setCallback(CALLBACK_REF(Elevation));
-  astrotimestamp.setCallback(CALLBACK_REF(AstroTime));
-  sunculm.setCallback(CALLBACK_REF(SunCulm));
-  astroevent.setCallback(CALLBACK_REF(AstroEvent));
-
-
-  // Setup MQTT subscriptions
-  mqtt.subscribe(&temp1);
-  mqtt.subscribe(&temp2);
-  mqtt.subscribe(&temp3);
-  mqtt.subscribe(&press2);
-  mqtt.subscribe(&hum2);
-  mqtt.subscribe(&rainProb);
-  mqtt.subscribe(&sunRise);
-  mqtt.subscribe(&sunSet);
-  mqtt.subscribe(&moonRise);
-  mqtt.subscribe(&moonSet);
-  mqtt.subscribe(&moonPhase);
-  mqtt.subscribe(&azimuth);
-  mqtt.subscribe(&elevation);
-  mqtt.subscribe(&astrotimestamp);
-  mqtt.subscribe(&sunculm);
-  mqtt.subscribe(&astroevent);
 
   timUtil.init();
   displayUtil.init();
+  mqttSubscribe();
 
- }
+}
 
+void mqttSubscribe() {
+    temp1.setCallback(CALLBACK_REF(Temp1));
+    temp2.setCallback(CALLBACK_REF(Temp2));
+    temp3.setCallback(CALLBACK_REF(Temp3));
+    press2.setCallback(CALLBACK_REF(Press2));
+    hum2.setCallback(CALLBACK_REF(Hum2));
+    rainProb.setCallback(CALLBACK_REF(RainProb));
+    sunRise.setCallback(CALLBACK_REF(SunRise));
+    sunSet.setCallback(CALLBACK_REF(SunSet));
+    moonRise.setCallback(CALLBACK_REF(MoonRise));
+    moonSet.setCallback(CALLBACK_REF(MoonSet));
+    moonPhase.setCallback(CALLBACK_REF(MoonPhase));
+    azimuth.setCallback(CALLBACK_REF(Azimut));
+    elevation.setCallback(CALLBACK_REF(Elevation));
+    astrotimestamp.setCallback(CALLBACK_REF(AstroTime));
+    sunculm.setCallback(CALLBACK_REF(SunCulm));
+    astroevent.setCallback(CALLBACK_REF(AstroEvent));
+
+
+    // Setup MQTT subscriptions
+    mqtt.subscribe(&temp1);
+    mqtt.subscribe(&temp2);
+    mqtt.subscribe(&temp3);
+    mqtt.subscribe(&press2);
+    mqtt.subscribe(&hum2);
+    mqtt.subscribe(&rainProb);
+    mqtt.subscribe(&sunRise);
+    mqtt.subscribe(&sunSet);
+    mqtt.subscribe(&moonRise);
+    mqtt.subscribe(&moonSet);
+    mqtt.subscribe(&moonPhase);
+    mqtt.subscribe(&azimuth);
+    mqtt.subscribe(&elevation);
+    mqtt.subscribe(&astrotimestamp);
+    mqtt.subscribe(&sunculm);
+    mqtt.subscribe(&astroevent);
+}
 void unsubscribe() {
     // Setup MQTT subscriptions
     temp1.removeCallback();
@@ -188,11 +190,13 @@ void loop() {
     displayUtil.displayData(timUtil, unitStorage);
     String msg;
     // reboot if there are no messages more than 2 hours ago 
-    if (timUtil.lastMsgTooLate(msg)) {
+    boolean tooLate = timUtil.lastMsgTooLate(msg);
+    displayUtil.init();
+    displayUtil.displayStatusMsg(msg);
+    Serial.print("msg = ");
+    Serial.println(msg);
+    if  (tooLate) {
 
-        Serial.println("too late condition met!");
-        displayUtil.init();
-        displayUtil.displayMsg("waited > MAX_WAIT min for a message => RESTART");
         delay(10000); // msg readable 10 secs
           // remove MQTT subscriptions
         unsubscribe();
@@ -244,39 +248,38 @@ void print_wifi_status() {
 // Function to connect and reconnect as necessary to the MQTT server.
 // Should be called in the loop function and it will take care if connecting.
 void MQTT_connect() {
-    int8_t ret;
-    String statusMsg;
-
     // Stop if already connected.
     if (mqtt.connected()) {
         return;
     }
-
-    Serial.println("Connecting to MQTT... ");
+    int8_t ret;
+    String statusMsg = "Connecting to MQTT... ";
     displayUtil.init();
-
+    displayUtil.displayMsg(statusMsg);
 
     uint8_t retries = 3;
     while ((ret = mqtt.connect()) != 0) { // connect will return 0 for connected
         Serial.println(mqtt.connectErrorString(ret));
-        statusMsg = "Retrying MQTT conn in 10 seconds...";
+        statusMsg = String("Connect error, reconnect yielded: ") + String(mqtt.connectErrorString(ret));
         Serial.println(statusMsg);
         displayUtil.displayMsg(statusMsg);
         unsubscribe();
         mqtt.disconnect();
         delay(10000);  // wait 10 seconds
         retries--;
-        if (retries == 0) {
+        if (retries == 0) { // give up
             statusMsg = "MQTT connect FAILED -> restart ESP";
             Serial.println(statusMsg);
             displayUtil.displayMsg(statusMsg);
             unsubscribe();
             timUtil.setFirstMessageReceived(false);
             // restart
+            delay(5000);  // wait 5 seconds to allow reading display
             ESP.restart();
         }
     }
     statusMsg = (unitStorage.localIP + String(": MQTT Connected!")).c_str();
+    mqttSubscribe();
     Serial.println(statusMsg);
     displayUtil.displayMsg(statusMsg);
 }
