@@ -33,24 +33,12 @@
     <ClInclude Include="TimUtilCheck.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\SolarUnitLib\src\TimUtil.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\SolarUnitLib\src\UnitStorage.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DisplayUtil.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TimUtilCheck.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\SolarUnitLib\src\TimUtil.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\SolarUnitLib\src\UnitStorage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -3,11 +3,18 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30517.126
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "weather", "weather.vcxproj", "{C5F80730-F44F-4478-BDAE-6634EFC2CA88}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "weather", "weather.vcxproj", "{058C91DD-43C0-48D0-B88E-155354452866}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestTimUtil", "..\TestTimUtil\TestTimUtil.vcxproj", "{19CFA2BB-9457-4425-9625-3C909B44A656}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{23E51FD2-1E93-425D-AF9F-B89498079848}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SolarUnitLib", "..\..\..\SolarUnitLib\SolarUnitLib.vcxitems", "{C1464880-BB5F-4D99-BA7E-98572F65B0FB}"
 EndProject
 Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		C:\Users\uwe\Documents\Arduino\libraries\ArduinoMqtt\ArduinoMqtt-1.5.1.vcxitems*{058c91dd-43c0-48d0-b88e-155354452866}*SharedItemsImports = 4
+		..\..\..\SolarUnitLib\SolarUnitLib.vcxitems*{058c91dd-43c0-48d0-b88e-155354452866}*SharedItemsImports = 4
+		..\..\..\SolarUnitLib\SolarUnitLib.vcxitems*{c1464880-bb5f-4d99-ba7e-98572f65b0fb}*SharedItemsImports = 9
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
 		Debug|x86 = Debug|x86
@@ -15,19 +22,11 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{C5F80730-F44F-4478-BDAE-6634EFC2CA88}.Debug|x64.ActiveCfg = Debug|Win32
-		{C5F80730-F44F-4478-BDAE-6634EFC2CA88}.Debug|x86.ActiveCfg = Debug|Win32
-		{C5F80730-F44F-4478-BDAE-6634EFC2CA88}.Debug|x86.Build.0 = Debug|Win32
-		{C5F80730-F44F-4478-BDAE-6634EFC2CA88}.Release|x64.ActiveCfg = Release|Win32
-		{C5F80730-F44F-4478-BDAE-6634EFC2CA88}.Release|x86.ActiveCfg = Release|Win32
-		{19CFA2BB-9457-4425-9625-3C909B44A656}.Debug|x64.ActiveCfg = Debug|x64
-		{19CFA2BB-9457-4425-9625-3C909B44A656}.Debug|x64.Build.0 = Debug|x64
-		{19CFA2BB-9457-4425-9625-3C909B44A656}.Debug|x86.ActiveCfg = Debug|Win32
-		{19CFA2BB-9457-4425-9625-3C909B44A656}.Debug|x86.Build.0 = Debug|Win32
-		{19CFA2BB-9457-4425-9625-3C909B44A656}.Release|x64.ActiveCfg = Release|x64
-		{19CFA2BB-9457-4425-9625-3C909B44A656}.Release|x64.Build.0 = Release|x64
-		{19CFA2BB-9457-4425-9625-3C909B44A656}.Release|x86.ActiveCfg = Release|Win32
-		{19CFA2BB-9457-4425-9625-3C909B44A656}.Release|x86.Build.0 = Release|Win32
+		{058C91DD-43C0-48D0-B88E-155354452866}.Debug|x64.ActiveCfg = Debug|Win32
+		{058C91DD-43C0-48D0-B88E-155354452866}.Debug|x86.ActiveCfg = Debug|Win32
+		{058C91DD-43C0-48D0-B88E-155354452866}.Debug|x86.Build.0 = Debug|Win32
+		{058C91DD-43C0-48D0-B88E-155354452866}.Release|x64.ActiveCfg = Release|Win32
+		{058C91DD-43C0-48D0-B88E-155354452866}.Release|x86.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
