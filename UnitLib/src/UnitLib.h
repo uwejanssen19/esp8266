@@ -13,12 +13,14 @@
 #else
 	#include "WProgram.h"
 #endif
+#define MQTT_LOG_ENABLED 1
+#define LOG_PRINTFLN(fmt, ...)	logfln(fmt, ##__VA_ARGS__)
+#define LOG_SIZE_MAX 128
+
+
 #include <MqttClient.h>
 #include <WiFiClient.h>
 #include <ESP8266WiFi.h>
-
-#define LOG_PRINTFLN(fmt, ...)	logfln(fmt, ##__VA_ARGS__)
-#define LOG_SIZE_MAX 128
 
 
 void mqttSetup(/*MqttClient * &/*, WiFiClient &*/);

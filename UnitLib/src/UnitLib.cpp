@@ -6,9 +6,7 @@
 */
 
 #include "UnitLib.h"
-static WiFiClient wclient;
-static MqttClient* mqtt = NULL;
-
+// Enable MqttClient logs
 
 void logfln(const char* fmt, ...) {
 	char buf[LOG_SIZE_MAX];
@@ -18,6 +16,10 @@ void logfln(const char* fmt, ...) {
 	va_end(ap);
 	Serial.println(buf);
 }
+
+static WiFiClient wclient;
+static MqttClient* mqtt = NULL;
+
 void mqttYield(long ms) {
 	mqtt->yield(ms);
 }
