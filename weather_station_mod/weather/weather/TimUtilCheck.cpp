@@ -1,6 +1,5 @@
 #include "TimUtilCheck.h"
 #include <time.h>
-
 void TimUtilCheck::setTimeOfLastMsg()
 {
 	time(&now);                       // read the current time
