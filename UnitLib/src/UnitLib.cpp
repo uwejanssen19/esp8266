@@ -38,6 +38,7 @@ public:
 
 void mqttSetup() {
 	// Setup MqttClient
+	logfln("in mqttSetup");
 	MqttClient::System* mqttSystem = new SystemImpl;
 	MqttClient::Logger* mqttLogger = new MqttClient::LoggerImpl<HardwareSerial>(Serial);
 	MqttClient::Network* mqttNetwork = new MqttClient::NetworkClientImpl<WiFiClient>(wclient, *mqttSystem);
@@ -92,6 +93,7 @@ bool mqttConnect(const char* mqttServer, const char* clientId)
 void mqttPublish(const char * topic, const char *messageValue) {
 	const char* buf = messageValue;
 	MqttClient::Message message;
+	//logfln("%s%s","in ",__FUNCTION__);
 	message.qos = MqttClient::QOS0;
 	message.retained = false;
 	message.dup = false;
@@ -106,7 +108,8 @@ void mqttPublish(const char * topic, const char *messageValue) {
 void wifiSetup() {
 	// Setup WiFi network
 	WiFi.mode(WIFI_STA);
-	WiFi.hostname("UweSolar2");
+	WiFi.hostname("UweSolar4");
+	logfln("%s", __FUNCTION__);
 	WiFi.begin(PRIVATE_SSID, PRIVATE_WLAN_KEY);
 	LOG_PRINTFLN("\n");
 	LOG_PRINTFLN("Connecting to WiFi");

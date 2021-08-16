@@ -13,14 +13,32 @@
 #else
 	#include "WProgram.h"
 #endif
-#define MQTT_LOG_ENABLED 1
+#define MQTT_LOG_ENABLED 0
 #define LOG_PRINTFLN(fmt, ...)	logfln(fmt, ##__VA_ARGS__)
 #define LOG_SIZE_MAX 128
 
 
-#include <MqttClient.h>
+#include <cred.h>
+#include <WiFiUdp.h>
+#include <WiFiServerSecureBearSSL.h>
+#include <WiFiServerSecureAxTLS.h>
+#include <WiFiServerSecure.h>
+#include <WiFiServer.h>
+#include <WiFiClientSecureBearSSL.h>
+#include <WiFiClientSecureAxTLS.h>
+#include <WiFiClientSecure.h>
 #include <WiFiClient.h>
+#include <ESP8266WiFiType.h>
+#include <ESP8266WiFiSTA.h>
+#include <ESP8266WiFiScan.h>
+#include <ESP8266WiFiMulti.h>
+#include <ESP8266WiFiGratuitous.h>
+#include <ESP8266WiFiGeneric.h>
+#include <ESP8266WiFiAP.h>
 #include <ESP8266WiFi.h>
+#include <CertStoreBearSSL.h>
+#include <BearSSLHelpers.h>
+#include <MqttClient.h>
 
 
 void mqttSetup(/*MqttClient * &/*, WiFiClient &*/);
