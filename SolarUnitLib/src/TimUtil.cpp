@@ -63,3 +63,7 @@ int TimUtilBase::getHour()
 	return 0;
 }
 
+void TimUtilBase::setTimeOfLastMsg()
+{
+}
+

@@ -16,15 +16,15 @@
   <ItemGroup>
     <Text Include="$(MSBuildThisFileDirectory)readme.txt" />
     <Text Include="$(MSBuildThisFileDirectory)library.properties" />
-    <Text Include="$(MSBuildThisFileDirectory)src\SolarUnitLib.h" />
   </ItemGroup>
   <ItemGroup>
     <!-- <ClInclude Include="$(MSBuildThisFileDirectory)SolarUnitLib.h" /> -->
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\MqttUtil.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)src\TimUtil.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)src\UnitStorage.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="$(MSBuildThisFileDirectory)src\SolarUnitLib.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\MqttUtil.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)src\TimUtil.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)src\UnitStorage.cpp" />
   </ItemGroup>

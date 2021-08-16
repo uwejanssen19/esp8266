@@ -26,6 +26,7 @@ class TimUtilBase
 	void update();
 	TimUtilBase();
 	int getHour();
+	void setTimeOfLastMsg();
 };
 
 extern TimUtilBase TimUtil;
