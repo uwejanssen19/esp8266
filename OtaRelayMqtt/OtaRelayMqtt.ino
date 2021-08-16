@@ -59,6 +59,14 @@ void setupOTA();
 void relaisControl(boolean value);
 boolean toggleBoolean();
 boolean gIrrOnOff = OFF;
+String analogResult;
+
+//mqtt
+String unitName = "UweSolar2";
+String tTemp = unitName + "/bme/temp";
+String status = unitName + "/status";
+String relayState = unitName + "/relayState";
+
 
 // Setup the MQTT client class by passing in the WiFi client and MQTT server and login details.
 Adafruit_MQTT_Client mqtt(&wclient, AIO_SERVER, AIO_SERVERPORT, "", "");
@@ -245,15 +253,30 @@ void print_wifi_status() {
     Serial.println(" dBm");
 }
 
-void publishMQTT(TimUtilBase, UnitStorage) {
+void publishMQTT(TimUtilBase) {
     /* we have to publish:
     1. time
-    2. status
+    2. status ( = IP address, uptime, rssi, battery level )
     3. temperature
     4. Battery level 
+    5. rssi
+    6. IP address
     */
 
 }
-char* getTemp() {
+String getTemp() {
 
+}
+String readVoltage() {
+    float outputValue = 0;
+    unsigned int analogValue = 0;
+    analogValue = analogRead(A0);
+    Serial.println(analogValue);
+    outputValue = map(analogValue, 0, 1023, 0, 255);
+#ifdef VM_DEBUG
+    Serial.println(outputValue);
+#endif
+    analogResult = String(outputValue,2); // 2 decimals
+    analogResult =+ "V";
+    return analogResult;
 }
