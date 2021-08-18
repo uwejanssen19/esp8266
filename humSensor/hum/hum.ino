@@ -1,62 +1,21 @@
-/*
-  Blink
-  Turns on an LED on for one second, then off for one second, repeatedly.
 
-  Most Arduinos have an on-board LED you can control. On the Uno and
-  Leonardo, it is attached to digital pin 13. If you're unsure what
-  pin the on-board LED is connected to on your Arduino model, check
-  the documentation at http://arduino.cc
-
-  This example code is in the public domain.
-
-  modified 8 May 2014
-  by Scott Fitzgerald
- */
-
-//#include <seesaw_servo.h>
-//#include <seesaw_neopixel.h>
-//#include <seesaw_motor.h>
-//#include <Adafruit_TFTShield18.h>
 
 #include <UnitLib.h>
 #include "SoilSensor.h"
-//#include <Adafruit_NeoTrellis.h>
-//#include <Adafruit_NeoKey_1x4.h>
-//#include <Adafruit_miniTFTWing.h>
-//#include <Adafruit_Crickit.h>
 
-// the setup function runs once when you press reset or power the board
-//#include <cred.h>
-//#include <WiFiUdp.h>
-//#include <WiFiServerSecureBearSSL.h>
-//#include <WiFiServerSecureAxTLS.h>
-//#include <WiFiServerSecure.h>
-//#include <WiFiServer.h>
-//#include <WiFiClientSecureBearSSL.h>
-//#include <WiFiClientSecureAxTLS.h>
-//#include <WiFiClientSecure.h>
-//#include <WiFiClient.h>
-//#include <ESP8266WiFiType.h>
-//#include <ESP8266WiFiSTA.h>
-//#include <ESP8266WiFiScan.h>
-//#include <ESP8266WiFiMulti.h>
-//#include <ESP8266WiFiGratuitous.h>
-//#include <ESP8266WiFiGeneric.h>
-//#include <ESP8266WiFiAP.h>
-//#include <ESP8266WiFi.h>
-//#include <CertStoreBearSSL.h>
-//#include <BearSSLHelpers.h>
-//#include <MqttClient.h>
 int cnt;
-String msg = "hugo";
+String msg = "UweSolar1 ";
 SoilSensor soilSensor;
 float hum = 0.0L;
-uint16_t degrees = 0;
+float degrees = 0;
+int vcc_raw = 0;
+float vcc = 0.0;
+int rssi = 0;
+String ip = "";
+
 void setup() {
-  // initialize digital pin 13 as an output.
-	Serial.begin(115200);
-  pinMode(LED_BUILTIN, OUTPUT);
-  logfln("%s %s", "in ", __FUNCTION__);
+  Serial.begin(115200);
+  //logfln("%s %s", "in ", __FUNCTION__);
   wifiSetup();
   mqttSetup();
   cnt = 0;
@@ -67,19 +26,46 @@ void setup() {
 // the loop function runs over and over again forever
 void loop() {
 	
-  mqttConnect("garden-control.fritz.box", "UweSolar4");
+  mqttConnect("garden-control.fritz.box", "UweSolar1");
 
-  digitalWrite(LED_BUILTIN, HIGH);   // turn the LED on (HIGH is the voltage level)
-  delay(5000);              // wait for a second
-  digitalWrite(LED_BUILTIN, LOW);    // turn the LED off by making the voltage LOW
+  //digitalWrite(LED_BUILTIN, HIGH);   // turn the LED on (HIGH is the voltage level)
+  //delay(1000);              // wait for a second
+  //digitalWrite(LED_BUILTIN, LOW);    // turn the LED off by making the voltage LOW
+  //delay(5);
+  vcc_raw = analogRead(A0);
+  vcc = vcc_raw * 4.2 / 1024;
+
+//  logfln("%s %u", "vcc = ", vcc);
+  delay(5);
+  rssi = WiFi.RSSI();
+ // logfln("%s %i", "signal strength =  ", rssi);
+  delay(5);
+  ip = WiFi.localIP().toString();
+  //logfln("IP = %s", ip.c_str());
+  delay(5);
+  msg += "/ " + ip + " " + rssi + "dBm " + vcc + "V";
+  //logfln("%s", msg.c_str());
   degrees = soilSensor.readSoilTemp();
-  logfln("%s %u", "publishing temperature = ", degrees);
-  mqttPublish("UweSolar2/bme/temp", String(degrees).c_str());
+  delay(5);
+  //logfln("%s %f", "publishing vcc = ", vcc);
+  mqttPublish("UweSolar1/a0/a0", String(vcc).c_str());
+  delay(5);
+  //logfln("%s %f", "publishing temperature = ", degrees);
+  mqttPublish("UweSolar1/bme/temp", String(degrees).c_str());
+  delay(5);
   hum = soilSensor.readSoilHum();
-  logfln("%s %f", "publishing humidity = ", hum);
-  mqttPublish("UweSolar2/bme/hum", String(hum).c_str());
-  delay(2000);              // wait for a second
-  system_deep_sleep_instant(5000 * 1000);
-
+  //logfln("%s %f", "publishing humidity = ", hum);
+  const char* soilhum = String(hum).c_str();
+  mqttPublish("UweSolar1/bme/hum", soilhum);
+  delay(5);
+  mqttPublish("UweSolar2/bme/hum", soilhum);
+  delay(5);
+  mqttPublish("soilhum", soilhum);
+  delay(5);
+  //logfln("status =  %s", msg.c_str());
+  mqttPublish("UweSolar1/status", msg.c_str());
+  delay(5);
+  delay(5000);              // wait before sleeping to let data out
+  system_deep_sleep_instant(1800 * 1000 * 1000); // sleep x * 1000 * 1000 [secs]
   
 }
