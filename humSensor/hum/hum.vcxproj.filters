@@ -24,9 +24,15 @@
     <ClInclude Include="SoilSensor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\SolarUnitLib\src\TimUtil.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SoilSensor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\SolarUnitLib\src\TimUtil.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
