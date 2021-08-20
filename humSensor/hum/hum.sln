@@ -15,13 +15,21 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ESP8266WiFi-1.0", "C:\Users
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Credentials-0.0.0", "C:\Users\uwe\Documents\Arduino\libraries\Credentials\Credentials-0.0.0.vcxitems", "{8DB78C90-CAD4-477A-B590-70704FCBE6E6}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Adafruit_BME280_Library-2.1.2", "C:\Users\uwe\Documents\Arduino\libraries\Adafruit_BME280_Library\Adafruit_BME280_Library-2.1.2.vcxitems", "{5ED30351-13F6-4D7C-92F2-C0BF0D1B2754}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Adafruit_BMP085_Library-1.2.1", "C:\Users\uwe\Documents\Arduino\libraries\Adafruit_BMP085_Library\Adafruit_BMP085_Library-1.2.1.vcxitems", "{4D3DF502-BF14-458D-8B53-1204E9643D85}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		C:\Users\uwe\AppData\Local\arduino15\packages\esp8266\hardware\esp8266\2.7.4\libraries\ESP8266WiFi\ESP8266WiFi-1.0.vcxitems*{4757e359-c29d-4aa9-b0b8-5a5dc04b5d58}*SharedItemsImports = 9
+		C:\Users\uwe\Documents\Arduino\libraries\Adafruit_BMP085_Library\Adafruit_BMP085_Library-1.2.1.vcxitems*{4d3df502-bf14-458d-8b53-1204e9643d85}*SharedItemsImports = 9
+		C:\Users\uwe\Documents\Arduino\libraries\Adafruit_BME280_Library\Adafruit_BME280_Library-2.1.2.vcxitems*{5ed30351-13f6-4d7c-92f2-c0bf0d1b2754}*SharedItemsImports = 9
 		C:\Users\uwe\Documents\Arduino\libraries\Adafruit_seesaw_Library\Adafruit_seesaw_Library-1.4.5.vcxitems*{6b8bada0-f19d-4e56-9538-b07614e2fe54}*SharedItemsImports = 9
 		C:\Users\uwe\Documents\Arduino\libraries\Credentials\Credentials-0.0.0.vcxitems*{8db78c90-cad4-477a-b590-70704fcbe6e6}*SharedItemsImports = 9
 		..\..\UnitLib\UnitLib.vcxitems*{c4140560-fe17-45e8-8892-fa203a63a00c}*SharedItemsImports = 9
 		C:\Users\uwe\AppData\Local\arduino15\packages\esp8266\hardware\esp8266\2.7.4\libraries\ESP8266WiFi\ESP8266WiFi-1.0.vcxitems*{c5f80730-f44f-4478-bdae-6634efc2ca88}*SharedItemsImports = 4
+		C:\Users\uwe\Documents\Arduino\libraries\Adafruit_BME280_Library\Adafruit_BME280_Library-2.1.2.vcxitems*{c5f80730-f44f-4478-bdae-6634efc2ca88}*SharedItemsImports = 4
+		C:\Users\uwe\Documents\Arduino\libraries\Adafruit_BMP085_Library\Adafruit_BMP085_Library-1.2.1.vcxitems*{c5f80730-f44f-4478-bdae-6634efc2ca88}*SharedItemsImports = 4
 		C:\Users\uwe\Documents\Arduino\libraries\Adafruit_seesaw_Library\Adafruit_seesaw_Library-1.4.5.vcxitems*{c5f80730-f44f-4478-bdae-6634efc2ca88}*SharedItemsImports = 4
 		C:\Users\uwe\Documents\Arduino\libraries\ArduinoMqtt\ArduinoMqtt-1.5.1.vcxitems*{c5f80730-f44f-4478-bdae-6634efc2ca88}*SharedItemsImports = 4
 		C:\Users\uwe\Documents\Arduino\libraries\Credentials\Credentials-0.0.0.vcxitems*{c5f80730-f44f-4478-bdae-6634efc2ca88}*SharedItemsImports = 4

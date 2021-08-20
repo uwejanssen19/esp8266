@@ -20,6 +20,9 @@ void prepMsg(boolean pmode, String& msg);
 TimUtilBase timUtil;
 String timeString = "";
 
+float bmeTemp = -1;
+float bmePress = -1;
+void printValues(); // test only
 
 void setup() {
   Serial.begin(115200);
@@ -34,18 +37,22 @@ void setup() {
   system_deep_sleep_set_option(2);
   timUtil.init();
   //timUtil.showTime();
+  bme.begin();
   setupOTA();
 
 }
 // the loop function runs over and over again forever
 void loop() {
-  ArduinoOTA.handle();
 	             
   timUtil.update();
   //timUtil.showTime();
   timeString = timUtil.getTime();
   mqttConnect("garden-control.fritz.box", "UweSolar1");
-  ArduinoOTA.handle();
+  // use the printValues method for the appropiate sensor
+  //printValues <Adafruit_BMP085>() ;
+  //printValues<int>();
+  bmeTemp = bme.readTemperature();
+  bmePress = bme.readPressure();
 
   //digitalWrite(LED_BUILTIN, HIGH);   // turn the LED on (HIGH is the voltage level)
   //delay(1000);              // wait for a second
@@ -71,7 +78,7 @@ void loop() {
   //logfln("%s %f", "publishing temperature = ", degrees);
   mqttPublish("UweSolar1/bme/temp", String(degrees).c_str());
   delay(5);
-  mqttPublish("UweSolar1/systime", timeString.c_str());
+  mqttPublish("UweSolar1/time/value", timeString.c_str());
   delay(5);
   hum = soilSensor.readSoilHum();
   //logfln("%s %f", "publishing humidity = ", hum);
@@ -80,31 +87,45 @@ void loop() {
   //logfln("%s %s", "const char * soilhum = ", soilhumbuf);
   mqttPublish("UweSolar1/bme/hum", soilhumbuf);
   delay(10);
-  mqttPublish("UweSolar2/bme/hum", soilhumbuf);
+  mqttPublish("UweSolar2/bme/temp", String(bmeTemp).c_str());
   delay(10);
-  mqttPublish("soilhum", soilhumbuf);
+  mqttPublish("UweSolar2/bme/press", String(bmePress/100).c_str());
+  delay(10);
+  mqttPublish("UweSolar2/bme/hum", soilhumbuf);
   delay(10);
   //logfln("status =  %s", msg.c_str());
 
   pmode = digitalRead(D5); // check if pmode switch is set to programming mode
   //logfln("pmode = %i", pmode);
   prepMsg(pmode, msg);
-  ArduinoOTA.handle();
   mqttPublish("UweSolar1/status", msg.c_str());
   delay(5);
   // wait before sleeping to let data out
-  ArduinoOTA.handle();
   delay(5000);
-  ArduinoOTA.handle();
   if (pmode) {
 	  digitalWrite(LED_BUILTIN, HIGH);   // OFF
 	  system_deep_sleep_instant(1800 * 1000 * 1000); // sleep x * 1000 * 1000 [secs]
   }
   else {
 	  digitalWrite(LED_BUILTIN, LOW); // ON
-//	  logfln("do not sleep");
+	  while (true) { // enter programming mode
+		  delay(2000);
+		  pmode = digitalRead(D5); // check if pmode switch is set to programming mode
+		  Serial.print("pmode = ");
+		  Serial.println(pmode);
+		  if (pmode) {
+			  // external switch was set to non programming mode -> leave loop
+			  Serial.println("pmode stopped");
+			  break;
+		  }
+		  else {
+			  // continue programming mode 
+			  ArduinoOTA.handle();
+			  delay(1);
+			  //logfln("waiting for switch to be set to sleep, pmode = %b",pmode);
+		  }
+	  }
   }
-  ArduinoOTA.handle();
 }
 void prepMsg(boolean pmode, String& msg) {
 	msg.reserve(70);

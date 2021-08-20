@@ -39,7 +39,12 @@
 #include <CertStoreBearSSL.h>
 #include <BearSSLHelpers.h>
 #include <MqttClient.h>
+#include <ArduinoOTA.h>
+//#include <Adafruit_BME280.h>
+#include <Adafruit_BMP085.h>
 
+
+#define SEALEVELPRESSURE_HPA (1013.25)
 
 void mqttSetup(/*MqttClient * &/*, WiFiClient &*/);
 bool mqttConnect(/*MqttClient * mqttClient, */const char* mqttServer, const char * clientId/* , WiFiClient wclient*/);
@@ -49,6 +54,7 @@ void wifiSetup();
 void logfln(const char* fmt, ...);
 void mqttYield(long ms);
 void mqttSubscribe(const char* topic, void (*cbk)(MqttClient::MessageData& md));
+void printValues();
+extern Adafruit_BMP085 bme;
 
 #endif
-
