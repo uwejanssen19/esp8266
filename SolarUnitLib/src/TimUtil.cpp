@@ -6,8 +6,10 @@
 #include "time.h"
 
 void TimUtilBase::init() {
-//	Serial.println("TimUtilClass::init()");
-	configTime(MY_TZ, "de.ntp.pool.org");
+//	Serial.println("TimUtilBase::init() begin ");
+	//configTime(MY_TZ, "de.ntp.pool.org");
+	configTime(MY_TZ, "fritz.box");
+	//	Serial.println("TimUtilBase::init() end");
 }
 String TimUtilBase::getTime() {
 	return mTime;
@@ -16,28 +18,28 @@ String TimUtilBase::getDate() {
 	return mDate;
 }
 
-//void showTime() {
+//void TimUtilBase::showTime() {
 //time(&now);                       // read the current time
-//localtime_r(&now, &tm);           // update the structure tm with the current time
+//localtime_r(&now, &timeStruct);           // update the structure tm with the current time
 //Serial.print("year:");
-//Serial.print(tm.tm_year + 1900);  // years since 1900
+//Serial.print(timeStruct.tm_year + 1900);  // years since 1900
 //Serial.print("\tmonth:");
-//Serial.print(tm.tm_mon + 1);      // January = 0 (!)
+//Serial.print(timeStruct.tm_mon + 1);      // January = 0 (!)
 //Serial.print("\tday:");
-//Serial.print(tm.tm_mday);         // day of month
+//Serial.print(timeStruct.tm_mday);         // day of month
 //Serial.print("\thour:");
-//Serial.print(tm.tm_hour);         // hours since midnight  0-23
+//Serial.print(timeStruct.tm_hour);         // hours since midnight  0-23
 //Serial.print("\tmin:");
-//Serial.print(tm.tm_min);          // minutes after the hour  0-59
+//Serial.print(timeStruct.tm_min);          // minutes after the hour  0-59
 //Serial.print("\tsec:");
-//Serial.print(tm.tm_sec);          // seconds after the minute  0-61*
+//Serial.print(timeStruct.tm_sec);          // seconds after the minute  0-61*
 //Serial.print("\twday");
-//Serial.print(tm.tm_wday);         // days since Sunday 0-6
-//if (tm.tm_isdst == 1)             // Daylight Saving Time flag
-//Serial.print("\tDST");
+//Serial.print(timeStruct.tm_wday);         // days since Sunday 0-6
+//if (timeStruct.tm_isdst == 1)             // Daylight Saving Time flag
+//  Serial.print("\tDST");
 //else
-//Serial.print("\tstandard");
-//Serial.println();
+//  Serial.print("\tstandard");
+//  Serial.println();
 //}
 
 void TimUtilBase::update() {
@@ -49,7 +51,7 @@ void TimUtilBase::update() {
 	strftime(dbuffer, sizeof(dbuffer), "%d.%m.%Y", &timeStruct);
 	this->mDate = String(dbuffer);
 	this->mTime = String(tbuffer);
-	//Serial.print("UHR: "); Serial.println(mTime);
+	Serial.print("UHR: "); Serial.println(mTime);
 	//Serial.print("TAG: "); Serial.println(mDate);
 }
 
