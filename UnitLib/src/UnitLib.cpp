@@ -18,7 +18,9 @@ void logfln(const char* fmt, ...) {
 
 static WiFiClient wclient;
 static MqttClient* mqtt = NULL;
+#ifndef _PROTOTYPE
 Adafruit_BMP085 bme;
+#endif
 
 void mqttYield(long ms) {
 	mqtt->yield(ms);

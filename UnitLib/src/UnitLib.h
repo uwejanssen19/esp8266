@@ -20,13 +20,13 @@
 
 #include <cred.h>
 #include <WiFiUdp.h>
-#include <WiFiServerSecureBearSSL.h>
-#include <WiFiServerSecureAxTLS.h>
+//#include <WiFiServerSecureBearSSL.h>
+//#include <WiFiServerSecureAxTLS.h>
 #include <WiFiServerSecure.h>
 #include <WiFiServer.h>
-#include <WiFiClientSecureBearSSL.h>
-#include <WiFiClientSecureAxTLS.h>
-#include <WiFiClientSecure.h>
+//#include <WiFiClientSecureBearSSL.h>
+//#include <WiFiClientSecureAxTLS.h>
+//#include <WiFiClientSecure.h>
 #include <WiFiClient.h>
 #include <ESP8266WiFiType.h>
 #include <ESP8266WiFiSTA.h>
@@ -36,15 +36,16 @@
 #include <ESP8266WiFiGeneric.h>
 #include <ESP8266WiFiAP.h>
 #include <ESP8266WiFi.h>
-#include <CertStoreBearSSL.h>
-#include <BearSSLHelpers.h>
+//#include <CertStoreBearSSL.h>
+//#include <BearSSLHelpers.h>
 #include <MqttClient.h>
 #include <ArduinoOTA.h>
-//#include <Adafruit_BME280.h>
+
+#ifndef _PROTOTYPE  // no sensor implementation for lab edition ( = _PROTOTYPE ) 
 #include <Adafruit_BMP085.h>
-
-
 #define SEALEVELPRESSURE_HPA (1013.25)
+#endif
+
 
 void mqttSetup(/*MqttClient * &/*, WiFiClient &*/);
 bool mqttConnect(/*MqttClient * mqttClient, */const char* mqttServer, const char * clientId/* , WiFiClient wclient*/);
@@ -55,6 +56,8 @@ void logfln(const char* fmt, ...);
 void mqttYield(long ms);
 void mqttSubscribe(const char* topic, void (*cbk)(MqttClient::MessageData& md));
 void printValues();
+#ifndef _PROTOTYPE // no sensor implementation for lab edition
 extern Adafruit_BMP085 bme;
+#endif
 
 #endif
