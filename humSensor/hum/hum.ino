@@ -4,6 +4,8 @@
 #include "SoilSensor.h"
 #include <ArduinoOTA.h>
 #include "TimUtil.h"
+// uncomment next line for hardware without adafruit bmpXX or bme280 sensor
+//#define _PROTOTYPE
 
 int cnt;
 String msg;
@@ -19,9 +21,10 @@ void setupOTA();
 void prepMsg(boolean pmode, String& msg);
 TimUtilBase timUtil;
 String timeString = "";
-
+#ifndef _PROTOTYPE
 float bmeTemp = -1;
 float bmePress = -1;
+#endif _PROTOTYPE
 void printValues(); // test only
 
 void setup() {
@@ -37,7 +40,9 @@ void setup() {
   system_deep_sleep_set_option(2);
   timUtil.init();
   //timUtil.showTime();
+#ifndef _PROTOTYPE
   bme.begin();
+#endif
   setupOTA();
 
 }
@@ -48,12 +53,13 @@ void loop() {
   //timUtil.showTime();
   timeString = timUtil.getTime();
   mqttConnect("garden-control.fritz.box", "UweSolar1");
+#ifndef _PROTOTYPE
   // use the printValues method for the appropiate sensor
   //printValues <Adafruit_BMP085>() ;
   //printValues<int>();
   bmeTemp = bme.readTemperature();
   bmePress = bme.readPressure();
-
+#endif
   //digitalWrite(LED_BUILTIN, HIGH);   // turn the LED on (HIGH is the voltage level)
   //delay(1000);              // wait for a second
   //digitalWrite(LED_BUILTIN, LOW);    // turn the LED off by making the voltage LOW
@@ -87,10 +93,12 @@ void loop() {
   //logfln("%s %s", "const char * soilhum = ", soilhumbuf);
   mqttPublish("UweSolar1/bme/hum", soilhumbuf);
   delay(10);
+#ifndef _PROTOTYPE
   mqttPublish("UweSolar2/bme/temp", String(bmeTemp).c_str());
   delay(10);
   mqttPublish("UweSolar2/bme/press", String(bmePress/100).c_str());
   delay(10);
+#endif
   mqttPublish("UweSolar2/bme/hum", soilhumbuf);
   delay(10);
   //logfln("status =  %s", msg.c_str());
@@ -104,7 +112,7 @@ void loop() {
   delay(5000);
   if (pmode) {
 	  digitalWrite(LED_BUILTIN, HIGH);   // OFF
-	  system_deep_sleep_instant(1800 * 1000 * 1000); // sleep x * 1000 * 1000 [secs]
+	  system_deep_sleep_instant(8 * 1000 * 1000); // sleep x * 1000 * 1000 [secs]
   }
   else {
 	  digitalWrite(LED_BUILTIN, LOW); // ON
