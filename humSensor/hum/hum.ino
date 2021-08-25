@@ -4,7 +4,7 @@
 #include "SoilSensor.h"
 #include <ArduinoOTA.h>
 #include "TimUtil.h"
-//  prototype hardware: hardware WITHOUT (no adafruit bmpXX nor bme280 sensor AND no pmode switch)  but *WITH* display : #define _PROTOTYPE
+//  prototype hardware: hardware WITHOUT (no adafruit bmpXX nor bme280 sensor AND pmode switch)  but *WITH* display : #define _PROTOTYPE
 //  final hardware: hardware WITH (either adafruit bmpXX or bme280 sensor AND pmode switch) but without display : #undef _PROTOTYPE
 #undef _PROTOTYPE
 
@@ -47,8 +47,8 @@ String timeString = "";
 #ifndef _PROTOTYPE
 float bmeTemp = -1;
 float bmePress = -1;
-#endif // END #ifndef _PROTOTYPE
 void printValues(); // test only
+#endif // END #ifndef _PROTOTYPE
 
 void setup() {
   Serial.begin(115200);
@@ -82,7 +82,7 @@ void loop() {
 #ifndef _PROTOTYPE
   // use the printValues method for the appropiate sensor
   //printValues <Adafruit_BMP085>() ;
-  //printValues();
+  printValues();
   bmeTemp = bme.readTemperature();
   bmePress = bme.readPressure();
 #endif
@@ -151,22 +151,20 @@ void loop() {
   u8g2.sendBuffer();
 
 #endif // END #ifdef _PROTOTYPE
-#ifndef _PROTOTYPE
   runMode = digitalRead(D5); // check if pmode switch is set to programming mode
-#endif
-  logfln("%s", BOOLSTR(runMode));
+  //logfln("%s", BOOLSTR(runMode));
   prepMsg(runMode, msg);
 //  logfln("status = %s", msg.c_str());
   mqttPublish("UweSolar1/status", msg.c_str());
   delay(5);
   // wait before sleeping to let data out
   delay(5000);
-#ifndef _PROTOTYPE
   if (runMode == SLEEPMODE) {
 	  logfln("%s", "SLEEP mode active");
 	  digitalWrite(LED_BUILTIN, HIGH);   // OFF
 	  delay(1);
-	  system_deep_sleep_instant(1800 * 1000 * 1000); // sleep x * 1000 * 1000 [secs]
+	  system_deep_sleep_instant(1800 * 1000 * 1000); // sleep x * 1000 * 1000 [secs] 
+//	  system_deep_sleep_instant(2 * 1000 * 1000); // sleep x * 1000 * 1000 [secs] // short sleep for test only
   }
   else {
 	  logfln("%s", "PROGRAMMING mode active");
@@ -189,10 +187,6 @@ void loop() {
 		  }
 	  }
   }
-#else
-  delay(1000);
-  ArduinoOTA.handle();
-#endif // real hardware ?
 }
 //void prepMsg(boolean pmode, String& msg) {
 //	msg.reserve(80);
