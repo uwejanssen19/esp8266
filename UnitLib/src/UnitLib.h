@@ -43,6 +43,8 @@
 
 #ifndef _PROTOTYPE  // no sensor implementation for lab edition ( = _PROTOTYPE ) 
 #include <Adafruit_BMP085.h>
+//#include <Adafruit_BME280.h>
+
 #define SEALEVELPRESSURE_HPA (1013.25)
 #endif
 
@@ -58,6 +60,7 @@ void mqttSubscribe(const char* topic, void (*cbk)(MqttClient::MessageData& md));
 void printValues();
 #ifndef _PROTOTYPE // no sensor implementation for lab edition
 extern Adafruit_BMP085 bme;
+//extern Adafruit_BME280 bme;
 #endif
 
 #endif

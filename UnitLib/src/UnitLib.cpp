@@ -184,21 +184,25 @@ void printValues() {
 	Serial.print(bme.readTemperature());
 	Serial.println(" *C");
 
+	// only BME280
+//	bme.seaLevelForAltitude(423.0, SEALEVELPRESSURE_HPA);
+
 	Serial.print("Pressure = ");
 
-	Serial.print(bme.readPressure());
+	Serial.print(bme.readPressure()/100.0F);
 	Serial.println(" hPa");
 
 	Serial.println("BmeType");
 
-	//Serial.print("Approx. Altitude = ");
-	//Serial.print(bme.readAltitude(SEALEVELPRESSURE_HPA));
-	//Serial.println(" m");
+	Serial.print("Approx. Altitude = ");
+	Serial.print(bme.readAltitude(SEALEVELPRESSURE_HPA));
+	Serial.println(" m");
 
 	//if (typeid(Adafruit_BME280) == typeid(BmeType)) {
-	//	Serial.print("Humidity = ");
-	//	Serial.print(bme.readHumidity());
-	//	Serial.println(" %");
+	//bme.seaLevelForAltitude(423.0,SEALEVELPRESSURE_HPA);
+		//Serial.print("Humidity = ");
+		//Serial.print(bme.readHumidity());
+		//Serial.println(" %");
 	//}
 
 	Serial.println();
