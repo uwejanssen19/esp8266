@@ -11,7 +11,6 @@
 #ifdef _PROTOTYPE
 #include <U8g2lib.h>
 
-
 #ifdef U8X8_HAVE_HW_SPI
 #include <SPI.h>
 #endif
@@ -21,8 +20,17 @@
 
 U8G2_SSD1306_128X64_NONAME_F_SW_I2C u8g2(U8G2_R0, /* clock=*/ SCL, /* data=*/ SDA, /* reset=*/ U8X8_PIN_NONE);   // All Boards without Reset of the Display
 #endif
+#ifdef _PROTOTYPE 
+# define HOSTNAME "UweSolar4_Prototype"
+#else 
+# define HOSTNAME "UweSolar1"
+#endif 
+#define VCC_TOPIC (HOSTNAME "/a0/a0")
+#define SOIL_HUM_TOPIC (HOSTNAME "/bme/hum")
+#define TIME_TOPIC (HOSTNAME "/time/value")
+#define STATUS_TOPIC (HOSTNAME "/status")
+#define SOIL_TEMP_TOPIC (HOSTNAME "/bme/temp")
 
-constexpr const char* HOSTNAME = "UweSolar1";
 #define RUN_MODE_STR "runMode = "
 #define RUN_MODE_SLEEP (RUN_MODE_STR "SLEEP")
 #define RUN_MODE_PGM (RUN_MODE_STR "PGM")
@@ -45,8 +53,8 @@ void prepMsg(boolean runMode, String& msg);
 TimUtilBase timUtil;
 String timeString = "";
 #ifndef _PROTOTYPE
-float bmeTemp = -1;
-float bmePress = -1;
+float bmeTemp = 99;
+float bmePress = 888;
 void printValues(); // test only
 #endif // END #ifndef _PROTOTYPE
 
@@ -78,11 +86,11 @@ void loop() {
   timUtil.update();
   //timUtil.showTime();
   timeString = timUtil.getTime();
-  mqttConnect("garden-control.fritz.box", "UweSolar1");
+  mqttConnect("garden-control.fritz.box", HOSTNAME);
 #ifndef _PROTOTYPE
   // use the printValues method for the appropiate sensor
   //printValues <Adafruit_BMP085>() ;
-  printValues();
+  //printValues();
   bmeTemp = bme.readTemperature();
   bmePress = bme.readPressure();
 #endif
@@ -109,15 +117,15 @@ void loop() {
   degrees = soilSensor.readSoilTemp()-2;
   delay(5);
   //logfln("%s %f", "publishing vcc = ", vcc); 
-  mqttPublish("UweSolar1/a0/a0", String(vcc).c_str());
+  mqttPublish(VCC_TOPIC, String(vcc).c_str());
   delay(5);
   //logfln("%s %f", "publishing temperature = ", degrees);
-  mqttPublish("UweSolar1/bme/temp", String(degrees).c_str());
+  mqttPublish(SOIL_TEMP_TOPIC, String(degrees).c_str());
   delay(5);
-  mqttPublish("UweSolar1/time/value", timeString.c_str());
+  mqttPublish(TIME_TOPIC, timeString.c_str());
   delay(5);
   hum = soilSensor.readSoilHum();
-  mqttPublish("UweSolar1/bme/hum", String(hum, 0).c_str());
+  mqttPublish(SOIL_HUM_TOPIC, String(hum, 0).c_str());
   delay(10);
 #ifndef _PROTOTYPE
   mqttPublish("UweSolar2/bme/temp", String(bmeTemp).c_str());
@@ -155,7 +163,7 @@ void loop() {
   //logfln("%s", BOOLSTR(runMode));
   prepMsg(runMode, msg);
 //  logfln("status = %s", msg.c_str());
-  mqttPublish("UweSolar1/status", msg.c_str());
+  mqttPublish(HOSTNAME "/status", msg.c_str());
   delay(5);
   // wait before sleeping to let data out
   delay(5000);
@@ -190,8 +198,8 @@ void loop() {
 }
 //void prepMsg(boolean pmode, String& msg) {
 //	msg.reserve(80);
-//	msg += "UweSolar1 ";
-//	msg += "/ ";
+//	msg += HOSTNAME;
+//	msg += " / ";
 //	msg += ip; msg += " "; msg += rssi; msg += "dBm "; msg += vcc;
 //	msg += "V, pmode = "; msg += (pmode ? "sleep" : "pgm");
 //}

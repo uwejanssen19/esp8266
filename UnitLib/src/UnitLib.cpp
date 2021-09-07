@@ -63,6 +63,8 @@ void mqttSetup() {
 
 bool mqttConnect(const char* mqttServer, const char* clientId)
 {
+	String statusMsg = "Connecting to MQTT... ";
+	uint8_t retries = 5;
 	if (!mqtt->isConnected()) {
 		// Close connection if exists
 		wclient.stop();
@@ -71,8 +73,8 @@ bool mqttConnect(const char* mqttServer, const char* clientId)
 		wclient.connect(mqttServer, 1883);
 		if (!wclient.connected()) {
 			LOG_PRINTFLN("Can't establish the TCP connection");
-			delay(1000);
-			ESP.restart();
+			delay(5000);
+			ESP.reset();
 		}
 		// Start new MQTT connection
 		MqttClient::ConnectResult connectResult;
@@ -83,11 +85,20 @@ bool mqttConnect(const char* mqttServer, const char* clientId)
 		options.clientID.cstring = (char*)clientId;
 		options.cleansession = true;
 		options.keepAliveInterval = 15; // 15 seconds
-		MqttClient::Error::type rc = mqtt->connect(options, connectResult);
-		if (rc != MqttClient::Error::SUCCESS) {
-			LOG_PRINTFLN("Connection error: %i", rc);
-			return false;
+		MqttClient::Error::type rc;
+		while ((rc = mqtt->connect(options, connectResult)) != MqttClient::Error::SUCCESS) {
+			retries--;
+			if (retries == 0) { // give up
+				statusMsg = "MQTT connect FAILED -> restart ESP";
+				Serial.println(statusMsg);
+
+				LOG_PRINTFLN("Connection error: %i, resetting board", rc);
+				ESP.reset();
+			}
+			delay(10000); // 10s
 		}
+		statusMsg = "MQTT Connected!";
+		Serial.println(statusMsg);
 	}
 	return true;
 }
