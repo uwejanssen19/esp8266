@@ -44,8 +44,8 @@ class UnitStorageClass
 	String  SOC = "55.5";
 	String  GridPower = "2.22";
 	//String  ConsumedPower = "-4.14";
-	//String  Mini600 = "99";
-	//String  Wind = "OSO 20";
+	String  Mini600 = "1";
+	String  Wind = "2";
 #define MAX_PAYLOAD 32
 	char payload[MAX_PAYLOAD];
 #endif // SMART_HOME
