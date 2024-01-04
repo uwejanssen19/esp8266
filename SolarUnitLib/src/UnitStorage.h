@@ -8,7 +8,6 @@
 #else
 	#include "WProgram.h"
 #endif
-
 class UnitStorageClass
 {
  protected:
@@ -16,6 +15,7 @@ class UnitStorageClass
 
  public:
 	void init();
+#ifdef WEATHER_ASTRO
 	String localIP = "";
 	String gTemp1 = "-1";
 	String gTemp2 = "-1";
@@ -38,6 +38,18 @@ class UnitStorageClass
 	String gTimeTemp2 = "HH:MM";
 	String gTimeTemp3 = "HH:MM";
 	String gDaily = "";
+#endif // ASTRO & WEATHER
+#ifdef SMART_HOME
+	String PV_Power="3.33";
+	String  SOC = "55.5";
+	String  GridPower = "2.22";
+	//String  ConsumedPower = "-4.14";
+	//String  Mini600 = "99";
+	//String  Wind = "OSO 20";
+#define MAX_PAYLOAD 32
+	char payload[MAX_PAYLOAD];
+#endif // SMART_HOME
+	unsigned short itemPtr = 2; // stores which item is currently displayed
 };
 
 extern UnitStorageClass UnitStorage;

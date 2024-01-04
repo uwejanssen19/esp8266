@@ -20,8 +20,10 @@
   <ItemGroup>
     <!-- <ClInclude Include="$(MSBuildThisFileDirectory)SolarUnitLib.h" /> -->
     <ClInclude Include="$(MSBuildThisFileDirectory)src\TimUtil.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\UnitStorage.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)src\TimUtil.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\UnitStorage.cpp" />
   </ItemGroup>
 </Project>

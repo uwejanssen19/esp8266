@@ -1,4 +1,6 @@
 #pragma once
+#ifndef _MQTTUTIL_h
+#define _MQTTUTIL_h
 // Include library
 #include <MqttClient.h>
 #include <WiFiClient.h>
@@ -91,3 +93,4 @@ public:
 //	void unsubscribe();
 //};
 //
+#endif // _MQTTUTIL_h
