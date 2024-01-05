@@ -1,4 +1,6 @@
 #pragma once
+#ifndef _TIMEUTILCHECK_h
+#define _TIMEUTILCHECK_h
 #include "TimUtil.h"
 class TimUtilCheck :
     public TimUtilBase
@@ -14,3 +16,4 @@ public:
     TimUtilCheck();
 };
 
+#endif

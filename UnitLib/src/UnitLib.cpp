@@ -70,12 +70,13 @@ bool mqttConnect(const char* mqttServer, const char* clientId)
 		wclient.stop();
 		// Re-establish TCP connection with MQTT broker
 		LOG_PRINTFLN("Connecting with %s", mqttServer);
-		wclient.connect(mqttServer, 1883);
-		if (!wclient.connected()) {
-			LOG_PRINTFLN("Can't establish the TCP connection");
-			delay(5000);
-			ESP.reset();
-		}
+		int wstatus = wclient.connect(mqttServer, 1883);
+		LOG_PRINTFLN("returned %d", wstatus);
+		//if (!wclient.connected()) {
+		//	LOG_PRINTFLN("Can't establish the TCP connection");
+		//	delay(5000);
+		//	ESP.reset();
+		//}
 		// Start new MQTT connection
 		MqttClient::ConnectResult connectResult;
 		// Connect
@@ -86,12 +87,14 @@ bool mqttConnect(const char* mqttServer, const char* clientId)
 		options.cleansession = true;
 		options.keepAliveInterval = 15; // 15 seconds
 		MqttClient::Error::type rc;
+		
+		LOG_PRINTFLN("error code  = %d", rc);
 		while ((rc = mqtt->connect(options, connectResult)) != MqttClient::Error::SUCCESS) {
 			retries--;
+			LOG_PRINTFLN("error code = %d", rc);
 			if (retries == 0) { // give up
 				statusMsg = "MQTT connect FAILED -> restart ESP";
 				Serial.println(statusMsg);
-
 				LOG_PRINTFLN("Connection error: %i, resetting board", rc);
 				ESP.reset();
 			}
@@ -121,9 +124,9 @@ void mqttPublish(const char * topic, const char *messageValue) {
 void wifiSetup() {
 	// Setup WiFi network
 	WiFi.mode(WIFI_STA);
-	WiFi.hostname("UweSolar4");
+	WiFi.hostname(HOSTNAME);
 	logfln("%s", __FUNCTION__);
-	WiFi.begin(PRIVATE_SSID, PRIVATE_WLAN_KEY);
+	WiFi.begin(USED_SSID, PRIVATE_WLAN_KEY);
 	LOG_PRINTFLN("\n");
 	LOG_PRINTFLN("Connecting to WiFi");
 	while (WiFi.status() != WL_CONNECTED) {

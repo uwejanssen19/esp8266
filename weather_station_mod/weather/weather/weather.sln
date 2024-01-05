@@ -11,7 +11,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SolarUnitLib", "..\..\..\So
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		C:\Users\uwe\Documents\Arduino\libraries\ArduinoMqtt\ArduinoMqtt-1.5.1.vcxitems*{058c91dd-43c0-48d0-b88e-155354452866}*SharedItemsImports = 4
 		..\..\..\SolarUnitLib\SolarUnitLib.vcxitems*{058c91dd-43c0-48d0-b88e-155354452866}*SharedItemsImports = 4
 		..\..\..\SolarUnitLib\SolarUnitLib.vcxitems*{c1464880-bb5f-4d99-ba7e-98572f65b0fb}*SharedItemsImports = 9
 	EndGlobalSection

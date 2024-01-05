@@ -19,6 +19,8 @@
     <None Include="src\arduino folders read me.txt">
       <Filter>Misc Files</Filter>
     </None>
+    <None Include="Release\UnitStorage.cpp.d" />
+    <None Include="Release\SolarUnitLib\UnitStorage.cpp.d" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="__vm\.weather.vsarduino.h">
@@ -41,5 +43,9 @@
     <ClCompile Include="TimUtilCheck.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="Release\UnitStorage.cpp.o" />
+    <Object Include="Release\SolarUnitLib\UnitStorage.cpp.o" />
   </ItemGroup>
 </Project>

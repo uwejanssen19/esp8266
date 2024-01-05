@@ -6,7 +6,7 @@
 #include "TimUtil.h"
 //  prototype hardware: hardware WITHOUT (no adafruit bmpXX nor bme280 sensor AND pmode switch)  but *WITH* display : #define _PROTOTYPE
 //  final hardware: hardware WITH (either adafruit bmpXX or bme280 sensor AND pmode switch) but without display : #undef _PROTOTYPE
-#undef _PROTOTYPE
+#define _PROTOTYPE
 
 #ifdef _PROTOTYPE
 #include <U8g2lib.h>
@@ -20,16 +20,12 @@
 
 U8G2_SSD1306_128X64_NONAME_F_SW_I2C u8g2(U8G2_R0, /* clock=*/ SCL, /* data=*/ SDA, /* reset=*/ U8X8_PIN_NONE);   // All Boards without Reset of the Display
 #endif
-#ifdef _PROTOTYPE 
-# define HOSTNAME "UweSolar4_Prototype"
-#else 
-# define HOSTNAME "UweSolar1"
-#endif 
 #define VCC_TOPIC (HOSTNAME "/a0/a0")
 #define SOIL_HUM_TOPIC (HOSTNAME "/bme/hum")
 #define TIME_TOPIC (HOSTNAME "/time/value")
 #define STATUS_TOPIC (HOSTNAME "/status")
-#define SOIL_TEMP_TOPIC (HOSTNAME "/bme/temp")
+#define BME_TEMP_TOPIC (HOSTNAME "/bme/temp")
+#define BME_PRESS_TOPIC (HOSTNAME "/bme/press")
 
 #define RUN_MODE_STR "runMode = "
 #define RUN_MODE_SLEEP (RUN_MODE_STR "SLEEP")
@@ -86,7 +82,7 @@ void loop() {
   timUtil.update();
   //timUtil.showTime();
   timeString = timUtil.getTime();
-  mqttConnect("garden-control.fritz.box", HOSTNAME);
+  mqttConnect();
 #ifndef _PROTOTYPE
   // use the printValues method for the appropiate sensor
   //printValues <Adafruit_BMP085>() ;
@@ -120,7 +116,7 @@ void loop() {
   mqttPublish(VCC_TOPIC, String(vcc).c_str());
   delay(5);
   //logfln("%s %f", "publishing temperature = ", degrees);
-  mqttPublish(SOIL_TEMP_TOPIC, String(degrees).c_str());
+  //mqttPublish(SOIL_TEMP_TOPIC, String(degrees).c_str());
   delay(5);
   mqttPublish(TIME_TOPIC, timeString.c_str());
   delay(5);
@@ -128,12 +124,19 @@ void loop() {
   mqttPublish(SOIL_HUM_TOPIC, String(hum, 0).c_str());
   delay(10);
 #ifndef _PROTOTYPE
-  mqttPublish("UweSolar2/bme/temp", String(bmeTemp).c_str());
+  mqttPublish(BME_TEMP_TOPIC, String(bmeTemp).c_str());
   delay(10);
-  mqttPublish("UweSolar2/bme/press", String(bmePress/100).c_str());
+  mqttPublish(BME_PRESS_TOPIC, String(bmePress/100).c_str());
   delay(10);
+#else 
+  // provide temperature also if BME is not there (use soil sensor instead)
+  mqttPublish(BME_TEMP_TOPIC, String(degrees).c_str());
+  delay(10);
+
 #endif
-  mqttPublish("UweSolar2/bme/hum", String(hum, 0).c_str());
+  // display this posing as UweSolar2 since the display unit displays 
+  // the hum value from Solar2 but not the soil hum from this unit
+  mqttPublish("UweSolar2/bme/hum", String(hum, 0).c_str()); 
   delay(10);
   //logfln("status =  %s", msg.c_str());
 #ifdef _PROTOTYPE
@@ -168,11 +171,10 @@ void loop() {
   // wait before sleeping to let data out
   delay(5000);
   if (runMode == SLEEPMODE) {
-	  logfln("%s", "SLEEP mode active");
+	  logfln("SLEEP for %d s", SLEEP_INTERVAL);
 	  digitalWrite(LED_BUILTIN, HIGH);   // OFF
 	  delay(1);
-	  system_deep_sleep_instant(1800 * 1000 * 1000); // sleep x * 1000 * 1000 [secs] 
-//	  system_deep_sleep_instant(2 * 1000 * 1000); // sleep x * 1000 * 1000 [secs] // short sleep for test only
+	  system_deep_sleep_instant(SLEEP_INTERVAL * 1000 * 1000); // sleep x * 1000 * 1000 [secs] 
   }
   else {
 	  logfln("%s", "PROGRAMMING mode active");
@@ -204,6 +206,7 @@ void loop() {
 //	msg += "V, pmode = "; msg += (pmode ? "sleep" : "pgm");
 //}
 void prepMsg(boolean runMode, String& msg) {
+	msg.reserve(100);
 	msg = 
 		String(HOSTNAME) + 
 		" / "+ 
@@ -213,5 +216,5 @@ void prepMsg(boolean runMode, String& msg) {
 		"dBm " + 
 		vcc + 
 		"V, pmode = " + 
-		(runMode ? "sleep" : "pgm");
+		(runMode ? (String(SLEEP_INTERVAL) + " sleep") : "pgm");
 }

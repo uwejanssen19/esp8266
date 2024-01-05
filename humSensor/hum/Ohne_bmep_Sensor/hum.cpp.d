@@ -170,4 +170,10 @@ C:\Users\uwe\AppData\Local\Temp\VMBuilds\hum\esp8266_d1_mini\Ohne_bmep_Sensor\hu
  C:\Users\uwe\AppData\Local\arduino15\packages\esp8266\hardware\esp8266\2.7.4\libraries\Wire/Wire.h \
  C:\Users\uwe\AppData\Local\Temp\VMBuilds\hum\esp8266_d1_mini\Ohne_bmep_Sensor\SoilSensor.h \
  C:\Users\uwe\Documents\Arduino\libraries\Adafruit_seesaw_Library/Adafruit_seesaw.h \
- C:\Users\uwe\AppData\Local\Temp\VMBuilds\hum\esp8266_d1_mini\Ohne_bmep_Sensor\TimUtil.h
+ C:\Users\uwe\AppData\Local\Temp\VMBuilds\hum\esp8266_d1_mini\Ohne_bmep_Sensor\TimUtil.h \
+ C:\Users\uwe\AppData\Local\arduino15\packages\esp8266\hardware\esp8266\2.7.4\libraries\U8g2\src/U8g2lib.h \
+ C:\Users\uwe\AppData\Local\arduino15\packages\esp8266\hardware\esp8266\2.7.4\libraries\U8g2\src/U8x8lib.h \
+ C:\Users\uwe\AppData\Local\arduino15\packages\esp8266\hardware\esp8266\2.7.4\libraries\U8g2\src/clib/u8x8.h \
+ C:\Users\uwe\AppData\Local\arduino15\packages\esp8266\hardware\esp8266\2.7.4\libraries\U8g2\src/clib/u8g2.h \
+ C:\Users\uwe\AppData\Local\arduino15\packages\esp8266\hardware\esp8266\2.7.4\libraries\U8g2\src/clib/u8x8.h \
+ C:\Users\uwe\AppData\Local\arduino15\packages\esp8266\hardware\esp8266\2.7.4\libraries\SPI/SPI.h

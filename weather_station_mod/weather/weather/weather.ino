@@ -1,30 +1,32 @@
 // prevent definition of display object inside "GxEPD2_display_selection_new_style.h"
 #undef NEED_DISPLAY_DEF
+#define WEATHER_ASTRO
 #include "DisplayUtil.h"
 #include "UnitStorage.h"
-#include <WiFiServerSecureBearSSL.h>
-#include <WiFiServerSecureAxTLS.h>
-#include <WiFiServerSecure.h>
-#include <WiFiServer.h>
-#include <WiFiClientSecureBearSSL.h>
-#include <WiFiClientSecureAxTLS.h>
-#include <WiFiClientSecure.h>
-#include <WiFiClient.h>
-#include <ESP8266WiFiType.h>
-#include <ESP8266WiFiSTA.h>
-#include <ESP8266WiFiScan.h>
-#include <ESP8266WiFiMulti.h>
-#include <ESP8266WiFiGratuitous.h>
-#include <ESP8266WiFiGeneric.h>
-#include <ESP8266WiFiAP.h>
-#include <ESP8266WiFi.h>
-#include <CertStoreBearSSL.h>
-#include <BearSSLHelpers.h>
+//#include <WiFiServerSecureBearSSL.h>
+//#include <WiFiServerSecureAxTLS.h>
+//#include <WiFiServerSecure.h>
+//#include <WiFiServer.h>
+//#include <WiFiClientSecureBearSSL.h>
+//#include <WiFiClientSecureAxTLS.h>
+//#include <WiFiClientSecure.h>
+#define _WIFI_CLIENT_H
+//#include <WiFiClient.h>
+//#include <ESP8266WiFiType.h>
+//#include <ESP8266WiFiSTA.h>
+//#include <ESP8266WiFiScan.h>
+//#include <ESP8266WiFiMulti.h>
+//#include <ESP8266WiFiGratuitous.h>
+//#include <ESP8266WiFiGeneric.h>
+//#include <ESP8266WiFiAP.h>
+//#include <ESP8266WiFi.h>
+//#include <CertStoreBearSSL.h>
+//#include <BearSSLHelpers.h>
 //#include <JsonParser.h>
 //#include <ArduinoJson.h>
 
 #include "TimUtilCheck.h"
-#include "MqttUtil.h"
+//#include "MqttUtil.h"
 
 
 //// MQTT const
@@ -46,7 +48,7 @@
 const char* ssid = PRIVATE_SSID; // defined in proj properties
 const char* wlanPwd = PRIVATE_WLAN_KEY; // defined in proj properties
 
-WiFiClient wclient;
+//WiFiClient wclient;
 
 
 /****************************** Feeds ***************************************/
@@ -61,18 +63,18 @@ DisplayUtil displayUtil;
 
 // Setup the MQTT client class by passing in the WiFi client and MQTT server and login details.
 //Adafruit_MQTT_Client mqtt(&wclient, AIO_SERVER, AIO_SERVERPORT,"","");
-MqttUtil mqttUtil(wclient, unitStorage, timUtil);
+//MqttUtil mqttUtil(wclient, unitStorage, timUtil);
 
 void setup(void) {
   Serial.begin(115200);
 
   //Serial.println(F("wifi BEGIN"));
-  initialise_wifi();
+  //initialise_wifi();
   //Serial.println(F("init wifi END "));
 
   timUtil.init();
   displayUtil.init();
-  mqttUtil.mqttSubscribe((NULL),NULL);
+  //mqttUtil.mqttSubscribe((NULL),NULL);
 
 }
 
@@ -85,13 +87,13 @@ void loop() {
     // connection and automatically reconnect when disconnected).  See the MQTT_connect
     // function definition further below.
     String msg;
-    //mqttUtil.mqttConnect(displayUtil.displayMsg(msg));
+    /* todo uncomment*///mqttUtil.mqttConnect(displayUtil.displayMsg(msg));
 //    mqttUtil.mqttConnect();
 
     // this is our 'wait for incoming subscription packets and callback em' busy subloop
     // try to spend your time here:
     //   Serial.println(F("BEFORE processPackets"));
-    mqttUtil.yield(10000);
+/* todo uncomment*/    //mqttUtil.yield(10000);
     //   Serial.println(F("AFTER  processPackets"));
     displayUtil.displayData(timUtil, unitStorage);
     // reboot if there are no messages more than 2 hours ago 
@@ -104,7 +106,7 @@ void loop() {
 
         delay(10000); // msg readable 10 secs
           // remove MQTT subscriptions
-        mqttUtil.unsubscribe();
+        /* todo uncomment*///mqttUtil.unsubscribe();
         ESP.restart();
     }
     delay(20000);
@@ -114,42 +116,42 @@ void loop() {
 
 // NETWORK STUFF
 
-void initialise_wifi() {
-    //Serial.println(F("init Wifi"));
-    WiFi.hostname(F("DisplayUnit"));
-    // connect to WLAN
-    WiFi.mode(WIFI_STA);
-    uint8_t retries = 5;
-    WiFi.begin(ssid, wlanPwd);
-    while (WiFi.status() != WL_CONNECTED) {
-        retries--;
-        if (retries == 0) {
-            Serial.println("Give up connecting to WLAN " + String(ssid));
-            ESP.restart();
-        }
-        delay(5000);
-        Serial.print(".");
-    }
-    unitStorage.localIP = WiFi.localIP().toString();
-    print_wifi_status();
-}
+//void initialise_wifi() {
+//    //Serial.println(F("init Wifi"));
+//    WiFi.hostname(F("DisplayUnit"));
+//    // connect to WLAN
+//    WiFi.mode(WIFI_STA);
+//    uint8_t retries = 5;
+//    WiFi.begin(ssid, wlanPwd);
+//    while (WiFi.status() != WL_CONNECTED) {
+//        retries--;
+//        if (retries == 0) {
+//            Serial.println("Give up connecting to WLAN " + String(ssid));
+//            ESP.restart();
+//        }
+//        delay(5000);
+//        Serial.print(".");
+//    }
+//    unitStorage.localIP = WiFi.localIP().toString();
+//    print_wifi_status();
+//}
 
-void print_wifi_status() {
-//   SSID des WiFi Netzwerkes ausgeben:
-  Serial.print("SSID: ");
-  Serial.println(ssid);
-
-  // WiFi IP Adresse des ESP32 ausgeben:
-  IPAddress ip = WiFi.localIP();
-  Serial.print("IP Address: ");
-  Serial.println(ip);
-
-  // WiFi Signalstaerke ausgeben:
-  long rssi = WiFi.RSSI();
-  Serial.print("signal strength (RSSI):");
-  Serial.print(rssi);
-  Serial.println(" dBm");
-}
+//void print_wifi_status() {
+////   SSID des WiFi Netzwerkes ausgeben:
+//  Serial.print("SSID: ");
+//  Serial.println(ssid);
+//
+//  // WiFi IP Adresse des ESP32 ausgeben:
+//  IPAddress ip = WiFi.localIP();
+//  Serial.print("IP Address: ");
+//  Serial.println(ip);
+//
+//  // WiFi Signalstaerke ausgeben:
+//  long rssi = WiFi.RSSI();
+//  Serial.print("signal strength (RSSI):");
+//  Serial.print(rssi);
+//  Serial.println(" dBm");
+//}
 //// Function to connect and reconnect as necessary to the MQTT server.
 //// Should be called in the loop function and it will take care if connecting.
 ////void x(void(*function)())

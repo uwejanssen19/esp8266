@@ -39,7 +39,7 @@ WiFiClient wclient;
 const char* ssid = PRIVATE_SSID;
 const char* wlanPwd = PRIVATE_WLAN_KEY;
 // MQTT const
-constexpr auto AIO_SERVER = "garden-control.fritz.box";
+constexpr auto AIO_SERVER = "openhabian.local";
 constexpr auto AIO_SERVERPORT = 1883;
 constexpr auto MY_QOS = MQTT_QOS_0;
 //constexpr auto AIO_USERNAME    ""
@@ -125,9 +125,12 @@ void loop(void) {
   //      mqtt.publish(topic, "relay OFF");
 
         // Pump OFF
+
     }
+
     ArduinoOTA.handle();
-    delay(1000);
+
+    delay(10000);
 }
 void setupOTA() {
     ArduinoOTA.onStart([]() {

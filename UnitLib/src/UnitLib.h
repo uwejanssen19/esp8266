@@ -48,9 +48,20 @@
 #define SEALEVELPRESSURE_HPA (1013.25)
 #endif
 
+#ifdef _PROTOTYPE 
+# define HOSTNAME "UweSolar4_Prototype"
+#define SLEEP_INTERVAL 2
+#else 
+//#define SLEEP_INTERVAL 3600
+#define SLEEP_INTERVAL 600
+# define HOSTNAME "UweSolar1"
+#endif 
+
+#define MQTTSERVER_IP "openhabian.local"
+#define USED_SSID PRIVATE_SSID
 
 void mqttSetup(/*MqttClient * &/*, WiFiClient &*/);
-bool mqttConnect(/*MqttClient * mqttClient, */const char* mqttServer, const char * clientId/* , WiFiClient wclient*/);
+bool mqttConnect(/*MqttClient * mqttClient, */const char* mqttServer = MQTTSERVER_IP, const char* clientId= HOSTNAME/* , WiFiClient wclient*/);
 void mqttPublish(/*MqttClient * mqttClient, */const char * topic, const char * value);
 //MqttClient* getMqtt();
 void wifiSetup();
